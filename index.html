@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#041428">
+<title>مركز المصطفى لصيانة السيارات</title>
+<style>
+  :root {
+    --navy: #041428;
+    --navy-light: #0A2540;
+    --navy-dark: #020A18;
+    --gold: #FFB800;
+    --gold-light: #FFD54F;
+    --gold-dark: #E5A200;
+    --bg: #F0F2F7;
+    --card: #FFFFFF;
+    --text: #0A1628;
+    --text-muted: #5A6B7E;
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --radius: 18px;
+    --radius-sm: 14px;
+    --shadow: 0 4px 24px rgba(4, 20, 40, 0.08);
+    --shadow-lg: 0 12px 40px rgba(4, 20, 40, 0.15);
+    --shadow-gold: 0 8px 28px rgba(255, 184, 0, 0.35);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Tahoma', sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+    padding-bottom: 100px; overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ============ HEADER ============ */
+  .header {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-light) 100%);
+    color: white; padding: 28px 20px 40px; border-radius: 0 0 32px 32px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 12px 40px rgba(4, 20, 40, 0.35);
+  }
+  .header::before {
+    content: ''; position: absolute; top: -80px; left: -80px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(255,184,0,0.35) 0%, transparent 65%);
+    border-radius: 50%;
+    animation: floatGlow 8s ease-in-out infinite;
+  }
+  .header::after {
+    content: ''; position: absolute; bottom: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,213,79,0.2) 0%, transparent 65%);
+    border-radius: 50%;
+    animation: floatGlow 10s ease-in-out infinite reverse;
+  }
+  @keyframes floatGlow {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(20px, -20px) scale(1.1); }
+  }
+  .header-content { position: relative; z-index: 1; }
+  .logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .logo-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    border-radius: 16px; display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 8px 24px rgba(255, 184, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+    transition: transform 0.3s ease;
+  }
+  .logo-icon:active { transform: scale(0.95) rotate(-5deg); }
+  .app-title { font-size: 21px; font-weight: 800; line-height: 1.3; letter-spacing: -0.3px; }
+  .app-subtitle { font-size: 13px; opacity: 0.75; margin-top: 3px; font-weight: 500; }
+  .header h1 {
+    font-size: 28px; font-weight: 900; margin-bottom: 8px; line-height: 1.25;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFD54F 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p { font-size: 14px; opacity: 0.8; line-height: 1.55; font-weight: 500; }
+
+  /* ============ CONTAINER & CARDS ============ */
+  .container { padding: 0 16px; margin-top: -20px; position: relative; z-index: 2; }
+  .card {
+    background: var(--card); border-radius: var(--radius); padding: 24px 20px;
+    box-shadow: var(--shadow); margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.6);
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* ============ FORM ============ */
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block; font-size: 14px; font-weight: 700;
+    margin-bottom: 10px; color: var(--navy);
+    letter-spacing: -0.2px;
+  }
+  .form-select, .form-input {
+    width: 100%;
+    padding: 18px 18px;
+    border: 2px solid #E2E6ED;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 500;
+    font-family: inherit;
+    background: #FAFBFD;
+    color: var(--text);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-appearance: none; appearance: none;
+    line-height: 1.4;
+  }
+  .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%230A2540' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: left 18px center;
+    padding-left: 46px;
+    cursor: pointer;
+  }
+  .form-select:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 184, 0, 0.15), 0 6px 20px rgba(255, 184, 0, 0.15);
+    transform: translateY(-1px);
+  }
+  .form-select:active, .form-input:active { transform: scale(0.995); }
+  .form-select:disabled { opacity: 0.5; cursor: not-allowed; }
+  .form-input::placeholder { color: #9AA5B1; font-weight: 400; }
+
+  /* ============ BUTTONS ============ */
+  .btn-primary {
+    width: 100%; padding: 18px 20px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: white; border: none; border-radius: var(--radius-sm);
+    font-size: 17px; font-weight: 800;
+    font-family: inherit; cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 20px rgba(4, 20, 40, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative; overflow: hidden;
+    margin-top: 6px; letter-spacing: -0.2px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    opacity: 0; transition: opacity 0.3s ease; z-index: 0;
+  }
+  .btn-primary > * { position: relative; z-index: 1; }
+  .btn-primary:active {
+    transform: scale(0.97);
+    box-shadow: 0 3px 12px rgba(4, 20, 40, 0.3);
+  }
+  .btn-primary:active::before { opacity: 0.15; }
+
+  /* ============ RESULTS ============ */
+  .results-section { display: none; }
+  .results-section.active { display: block; animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .car-badge {
+    display: flex; align-items: center; gap: 14px;
+    background: linear-gradient(135deg, rgba(255,184,0,0.12) 0%, rgba(255,184,0,0.04) 100%);
+    border: 1.5px solid rgba(255,184,0,0.35);
+    border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    animation: fadeInUp 0.5s ease;
+  }
+  .car-badge-icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(4, 20, 40, 0.25);
+  }
+  .car-badge-info h3 { font-size: 16px; font-weight: 800; color: var(--navy); letter-spacing: -0.2px; }
+  .car-badge-info p { font-size: 13px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
+
+  /* ============ TABS ============ */
+  .tabs {
+    display: flex; gap: 10px; overflow-x: auto;
+    padding: 4px 4px 8px; margin-bottom: 16px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0; padding: 12px 20px;
+    border: 1.5px solid #E2E6ED; border-radius: 50px;
+    background: white; font-size: 14px; font-weight: 700;
+    font-family: inherit; color: var(--text-muted);
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap; scroll-snap-align: start;
+    box-shadow: 0 2px 8px rgba(4, 20, 40, 0.04);
+  }
+  .tab-btn:active { transform: scale(0.95); }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: white; border-color: var(--navy);
+    box-shadow: 0 6px 16px rgba(4, 20, 40, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+  }
+
+  /* ============ FLUID CARD ============ */
+  .fluid-card {
+    background: var(--card); border-radius: var(--radius); padding: 20px;
+    box-shadow: var(--shadow); margin-bottom: 16px;
+    border-right: 4px solid var(--gold);
+    animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+    position: relative; overflow: hidden;
+  }
+  .fluid-card::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(255,184,0,0.08) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .fluid-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; position: relative; z-index: 1; }
+  .fluid-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .fluid-card:active .fluid-icon { transform: scale(1.1) rotate(-5deg); }
+  .fluid-icon.engine { background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05)); }
+  .fluid-icon.coolant { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); }
+  .fluid-icon.brake { background: linear-gradient(135deg, rgba(255,184,0,0.18), rgba(255,184,0,0.06)); }
+  .fluid-icon.transmission { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); }
+  .fluid-title { font-size: 17px; font-weight: 800; color: var(--navy); letter-spacing: -0.3px; }
+  .fluid-spec {
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #FAFBFD 0%, #F5F7FB 100%);
+    border-radius: 12px; padding: 12px 16px; margin-bottom: 8px;
+    font-size: 14px; border: 1px solid #EEF1F6;
+    transition: all 0.2s ease;
+  }
+  .fluid-spec:active { transform: scale(0.99); }
+  .fluid-spec .label { color: var(--text-muted); font-weight: 600; min-width: 80px; font-size: 13px; }
+  .fluid-spec .value { font-weight: 700; color: var(--text); }
+  .fluid-spec .value.gold { color: var(--gold-dark); font-weight: 800; }
+  .fluid-note {
+    background: linear-gradient(135deg, rgba(255,184,0,0.1), rgba(255,184,0,0.04));
+    border: 1px solid rgba(255,184,0,0.25);
+    border-radius: 12px; padding: 12px 16px; margin-top: 12px;
+    font-size: 13px; color: #7A5C00; line-height: 1.7; font-weight: 500;
+  }
+  .fluid-note::before { content: '💡 '; font-size: 15px; }
+
+  /* ============ ALERTS ============ */
+  .alert-box {
+    border-radius: var(--radius); padding: 16px 18px; margin-bottom: 16px;
+    display: flex; gap: 14px; animation: fadeInUp 0.5s ease both;
+  }
+  .alert-box.warning {
+    background: linear-gradient(135deg, rgba(255,184,0,0.12), rgba(255,184,0,0.04));
+    border: 1.5px solid rgba(255,184,0,0.35);
+  }
+  .alert-box.success {
+    background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04));
+    border: 1.5px solid rgba(16,185,129,0.35);
+  }
+  .alert-icon { font-size: 24px; flex-shrink: 0; line-height: 1; }
+  .alert-content h4 { font-size: 14px; font-weight: 800; margin-bottom: 6px; color: var(--navy); letter-spacing: -0.2px; }
+  .alert-content p { font-size: 13px; line-height: 1.65; color: #4A5568; font-weight: 500; }
+
+  /* ============ BOTTOM NAV - GLASSMORPHISM ============ */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    display: flex; justify-content: space-around;
+    padding: 10px 0 14px;
+    box-shadow: 0 -8px 32px rgba(4, 20, 40, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    z-index: 100;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 8px 20px; border: none; background: none;
+    font-family: inherit; font-size: 11px; font-weight: 700;
+    color: var(--text-muted); cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 14px; position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-item .nav-icon {
+    font-size: 22px; line-height: 1;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-block;
+  }
+  .nav-item:active .nav-icon { transform: scale(0.85); }
+  .nav-item.active { color: var(--navy); }
+  .nav-item.active .nav-icon {
+    transform: scale(1.15) translateY(-3px);
+    filter: drop-shadow(0 6px 10px rgba(255, 184, 0, 0.5));
+  }
+  .nav-item.active::after {
+    content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 24px; height: 3px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+    animation: dotIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes dotIn {
+    from { width: 0; opacity: 0; }
+    to { width: 24px; opacity: 1; }
+  }
+
+  /* ============ EMPTY / LOADING ============ */
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+  .empty-state .emoji { font-size: 56px; margin-bottom: 16px; display: block; animation: bounce 2s ease infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .empty-state p { font-size: 14px; line-height: 1.7; font-weight: 500; }
+  .loading { display: none; text-align: center; padding: 48px 20px; }
+  .loading.active { display: block; }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 4px solid rgba(255, 184, 0, 0.15);
+    border-top-color: var(--gold);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin: 0 auto 18px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+
+  /* ============ REMINDER UI ============ */
+  .reminder-section {
+    margin-top: 16px; padding-top: 16px;
+    border-top: 1.5px dashed #E2E6ED;
+  }
+  .reminder-title {
+    font-size: 13px; font-weight: 800; color: var(--navy);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+    letter-spacing: -0.2px;
+  }
+  .reminder-input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .reminder-input {
+    flex: 1; padding: 12px 14px;
+    border: 2px solid #E2E6ED; border-radius: 12px;
+    font-size: 14px; font-weight: 500; font-family: inherit;
+    background: #FAFBFD; min-width: 0;
+    transition: all 0.25s ease;
+  }
+  .reminder-input:focus {
+    outline: none; border-color: var(--gold);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 184, 0, 0.15);
+  }
+  .reminder-save-btn {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: white; border: none; border-radius: 12px;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    cursor: pointer; flex-shrink: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(4, 20, 40, 0.25);
+  }
+  .reminder-save-btn:active { transform: scale(0.95); }
+  .reminder-status {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 12px 16px; border-radius: 12px; margin-bottom: 10px;
+    font-size: 13px; font-weight: 700;
+  }
+  .reminder-status.ok {
+    background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04));
+    color: #065F46; border: 1px solid rgba(16,185,129,0.3);
+  }
+  .reminder-status.soon {
+    background: linear-gradient(135deg, rgba(255,184,0,0.15), rgba(255,184,0,0.05));
+    color: #7A5C00; border: 1px solid rgba(255,184,0,0.35);
+  }
+  .reminder-status.overdue {
+    background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.04));
+    color: #991B1B; border: 1px solid rgba(239,68,68,0.3);
+  }
+  .progress-bar {
+    width: 100%; height: 8px; background: #E2E6ED;
+    border-radius: 4px; overflow: hidden; margin-bottom: 10px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .progress-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px currentColor;
+  }
+  .reminder-meta { font-size: 12px; color: var(--text-muted); line-height: 1.7; font-weight: 500; }
+  .reminder-card {
+    background: var(--card); border-radius: var(--radius); padding: 18px;
+    box-shadow: var(--shadow); margin-bottom: 16px;
+    border-right: 4px solid var(--gold);
+    animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .reminder-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; gap: 10px;
+  }
+  .reminder-card-title { font-size: 15px; font-weight: 800; color: var(--navy); letter-spacing: -0.2px; }
+  .reminder-card-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 3px; font-weight: 500; }
+  .reminder-delete-btn {
+    background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.05));
+    color: #991B1B; border: none; border-radius: 10px;
+    padding: 8px 14px; font-family: inherit;
+    font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+  .reminder-delete-btn:active { transform: scale(0.93); }
+
+  /* ============ FLOATING CALL BUTTON ============ */
+  .fab-call {
+    position: fixed; bottom: 100px; left: 18px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    color: white; border: none; font-size: 26px;
+    cursor: pointer; z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 28px rgba(255, 184, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+    animation: pulseGold 2.5s infinite;
+  }
+  .fab-call:active { transform: scale(0.9) rotate(-10deg); }
+  @keyframes pulseGold {
+    0%, 100% { box-shadow: 0 8px 28px rgba(255, 184, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.4); }
+    50% { box-shadow: 0 8px 40px rgba(255, 184, 0, 0.85), 0 0 0 8px rgba(255, 184, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.4); }
+  }
+
+  /* ============ CALL MODAL ============ */
+  .call-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(4, 20, 40, 0.55);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    z-index: 300; display: none;
+    align-items: flex-end; justify-content: center;
+    animation: fadeIn 0.25s ease;
+  }
+  .call-modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .call-modal {
+    background: white; border-radius: 28px 28px 0 0;
+    padding: 28px 22px 36px; width: 100%; max-width: 480px;
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 -20px 60px rgba(4, 20, 40, 0.25);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .call-modal-handle {
+    width: 44px; height: 5px; background: #D1D5DB;
+    border-radius: 3px; margin: 0 auto 24px;
+  }
+  .call-modal-title {
+    font-size: 20px; font-weight: 800; color: var(--navy);
+    text-align: center; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .call-modal-subtitle {
+    font-size: 13px; color: var(--text-muted);
+    text-align: center; margin-bottom: 24px;
+    line-height: 1.6; font-weight: 500;
+  }
+  .call-number-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px 16px;
+    background: linear-gradient(135deg, #FAFBFD 0%, #F5F7FB 100%);
+    border: 2px solid #E2E6ED; border-radius: 16px;
+    text-decoration: none; color: var(--text);
+    margin-bottom: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .call-number-btn:active {
+    transform: scale(0.97);
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(255,184,0,0.08), rgba(255,184,0,0.02));
+  }
+  .call-number-icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: white; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(4, 20, 40, 0.25);
+  }
+  .call-number-info { flex: 1; }
+  .call-number-info .label {
+    font-size: 12px; color: var(--text-muted);
+    margin-bottom: 3px; font-weight: 600;
+  }
+  .call-number-info .number {
+    font-size: 18px; font-weight: 800; color: var(--navy);
+    direction: ltr; text-align: right; letter-spacing: 0.8px;
+  }
+  .call-modal-close {
+    width: 100%; padding: 16px;
+    background: transparent; border: none;
+    color: var(--text-muted); font-family: inherit;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-top: 8px;
+    border-radius: 12px; transition: background 0.2s ease;
+  }
+  .call-modal-close:active { background: #F5F7FB; }
+
+  /* ============ UTILITY ============ */
+  .hidden { display: none !important; }
+
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .bottom-nav { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
+    body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-content">
+    <div class="logo-row">
+      <div class="logo-icon">🔧</div>
+      <div>
+        <div class="app-title">مركز المصطفى</div>
+        <div class="app-subtitle">لصيانة السيارات</div>
+      </div>
+    </div>
+    <h1>دليل سوائل عربيتك</h1>
+    <p>اعرف المواصفات الصحيحة للسوائل حسب نوع عربيتك</p>
+  </div>
+</header>
+
+<div class="container">
+  <div id="inputSection" class="results-section active">
+    <div class="card" style="margin-top: 20px;">
+      <div class="form-group">
+        <label class="form-label">🚗 الماركة</label>
+        <select id="makeSelect" class="form-select"><option value="">اختر الماركة</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📋 الموديل</label>
+        <select id="modelSelect" class="form-select" disabled><option value="">اختر الموديل أولاً</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📅 سنة الصنع</label>
+        <select id="yearSelect" class="form-select" disabled><option value="">اختر السنة</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📍 عدد الكيلومترات الحالية</label>
+        <input type="number" id="kmInput" class="form-input" placeholder="مثال: 45000" min="0" max="999999">
+      </div>
+      <button class="btn-primary" onclick="searchFluids()"><span>🔍 اعرف السوائل المناسبة</span></button>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>جاري البحث عن السوائل المناسبة...</p>
+  </div>
+
+  <div id="resultsSection" class="results-section">
+    <div id="carBadge"></div>
+    <div id="alertsContainer"></div>
+    <div id="tabsContainer" class="tabs"></div>
+    <div id="fluidsContainer"></div>
+    <button class="btn-primary" onclick="resetForm()" style="background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%); box-shadow: 0 6px 20px rgba(107,114,128,0.25); margin-bottom: 20px;"><span>🔄 بحث جديد</span></button>
+  </div>
+
+  <div id="remindersSection" class="results-section">
+    <div class="empty-state" style="margin-top: 20px;">
+      <div class="emoji">⏰</div>
+      <p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل آخر تغيير لكل سائل عشان يظهرلك تنبيه.</p>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('home')" id="navHome"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
+  <button class="nav-item" onclick="switchTab('results')" id="navResults"><span class="nav-icon">🔍</span><span>النتائج</span></button>
+  <button class="nav-item" onclick="switchTab('reminders')" id="navReminders"><span class="nav-icon">⏰</span><span>التذكيرات</span></button>
+</nav>
+
+<button class="fab-call" onclick="openCallModal()" aria-label="اتصل للاستشارة">📞</button>
+
+<div class="call-modal-overlay" id="callModal" onclick="closeCallModal(event)">
+  <div class="call-modal" onclick="event.stopPropagation()">
+    <div class="call-modal-handle"></div>
+    <h3 class="call-modal-title">📞 استشارة مجانية</h3>
+    <p class="call-modal-subtitle">اتصل بنا للحصول على استشارة مجانية حول سوائل وصيانة سيارتك</p>
+
+    <a href="tel:01060716073" class="call-number-btn">
+      <div class="call-number-icon">📱</div>
+      <div class="call-number-info">
+        <div class="label">الخط الأول</div>
+        <div class="number">01060716073</div>
+      </div>
+    </a>
+
+    <a href="tel:01113335291" class="call-number-btn">
+      <div class="call-number-icon">📱</div>
+      <div class="call-number-info">
+        <div class="label">الخط الثاني</div>
+        <div class="number">01113335291</div>
+      </div>
+    </a>
+
+    <button class="call-modal-close" onclick="closeCallModal()">إلغاء</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// قاعدة بيانات السيارات والسوائل
+// ============================================================
+const CAR_DATA = {
+  // ==================== السيارات الكورية ====================
+  "hyundai": {
+    name: "هيونداي", models: {
+      "tucson": { name: "توسان", years: ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.6T أو 2.0L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "4.5-5 لتر", interval: "كل 10,000 كم", note: "توسان NX4 من أكثر السيارات الكورية مبيعاً في مصر." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Hyundai Long Life Coolant (أخضر أو أزرق)", spec: "Phosphate-free", capacity: "7-8 لتر", interval: "أول 120,000 كم، بعد كده كل 60,000 كم", note: "تحقق من اللون في الدليل." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين أو 40,000 كم", note: "DOT 4 أفضل للأداء العالي." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Hyundai ATF SP-IV أو DCT Fluid", spec: "حسب النوع", capacity: "6-8 لتر", interval: "كل 50,000 كم (DCT) أو 60,000 كم (AT)", note: "تحقق من نوع الفتيس." }
+      }},
+      "elantracn7": { name: "إلنترا CN7", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.6L أو 2.0L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SP", capacity: "4.0 لتر", interval: "كل 10,000 كم", note: "الجيل الجديد من إلنترا." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Hyundai Long Life Coolant", spec: "Phosphate-free", capacity: "6.5 لتر", interval: "كل 60,000 كم", note: "تحقق من اللون." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Hyundai CVT Fluid أو ATF SP-IV", spec: "حسب النوع", capacity: "5-7 لتر", interval: "كل 40,000 كم (CVT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "creta": { name: "كريتا", years: ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.5L أو 1.6L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN", capacity: "4.0 لتر", interval: "كل 10,000 كم", note: "SUV مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Hyundai Long Life", spec: "Phosphate-free", capacity: "6-7 لتر", interval: "كل 60,000 كم", note: "سائل هيونداي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Hyundai ATF SP-IV أو CVT Fluid", spec: "حسب النوع", capacity: "5-6 لتر", interval: "كل 40,000 كم (CVT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "accenthci": { name: "أكسنت HCI", years: ["2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.4L أو 1.6L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-20", spec: "API SN أو SP", capacity: "3.5-4.0 لتر", interval: "كل 10,000 كم", note: "سيدان اقتصادية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Hyundai Long Life", spec: "Phosphate-free", capacity: "6 لتر", interval: "كل 60,000 كم", note: "سائل هيونداي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Hyundai ATF SP-IV أو CVT Fluid", spec: "حسب النوع", capacity: "5-6 لتر", interval: "كل 40,000 كم (CVT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "bayon": { name: "بايون", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.0T أو 1.4L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN", capacity: "3.0-3.5 لتر", interval: "كل 10,000 كم", note: "SUV مدمجة صغيرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Hyundai Long Life", spec: "Phosphate-free", capacity: "5 لتر", interval: "كل 60,000 كم", note: "سائل هيونداي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Hyundai ATF SP-IV أو DCT Fluid", spec: "حسب النوع", capacity: "4-5 لتر", interval: "كل 50,000 كم (DCT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "kia": {
+    name: "كيا", models: {
+      "sportage": { name: "سبورتاج NQ5", years: ["2022","2023","2024","2025","2026"], engine: "1.6T أو 2.0L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "4.9 لتر", interval: "كل 10,000 كم", note: "سبورتاج NQ5 من أكثر السيارات الكورية مبيعاً." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Kia Long Life Coolant (أخضر)", spec: "Phosphate-free", capacity: "6-7 لتر", interval: "كل 4 سنوات", note: "لا تخلط الأنواع." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Kia ATF SP-IV أو DCT Fluid", spec: "حسب النوع", capacity: "6-8 لتر", interval: "كل 50,000 كم (DCT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "grandcerato": { name: "جراند سيراتو", years: ["2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.6L أو 2.0L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-20", spec: "API SN أو SP", capacity: "4.0-4.3 لتر", interval: "كل 10,000 كم", note: "سيدان متوسطة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Kia Long Life", spec: "Phosphate-free", capacity: "6 لتر", interval: "كل 4 سنوات", note: "سائل كيا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Kia ATF SP-IV أو CVT Fluid", spec: "حسب النوع", capacity: "5-7 لتر", interval: "كل 40,000 كم (CVT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "xceed": { name: "إكسيد XCeed", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.0T أو 1.6T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN", capacity: "3.6-4.4 لتر", interval: "كل 10,000 كم", note: "كروس أوفر مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Kia Long Life", spec: "Phosphate-free", capacity: "5.5-7.7 لتر", interval: "كل 4 سنوات", note: "سائل كيا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Kia DCT Fluid أو ATF SP-IV", spec: "حسب النوع", capacity: "5-6 لتر", interval: "كل 50,000 كم (DCT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "sorento": { name: "سورينتو", years: ["2021","2022","2023","2024","2025","2026"], engine: "2.5L أو 1.6T هايبرد", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20", spec: "API SN Plus", capacity: "4.8-6.5 لتر", interval: "كل 10,000 كم", note: "SUV عائلية 7 مقاعد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Kia Long Life", spec: "Phosphate-free", capacity: "6-8 لتر", interval: "كل 4 سنوات", note: "سائل كيا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Kia ATF SP-IV أو DCT Fluid", spec: "حسب النوع", capacity: "7-8 لتر", interval: "كل 50,000 كم (DCT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "seltos": { name: "سيلتوس", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.5L أو 1.6T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "4.0-4.8 لتر", interval: "كل 10,000 كم", note: "SUV مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Kia Long Life", spec: "Phosphate-free", capacity: "6 لتر", interval: "كل 4 سنوات", note: "سائل كيا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Kia CVT Fluid أو ATF SP-IV", spec: "حسب النوع", capacity: "5-6 لتر", interval: "كل 40,000 كم (CVT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "mitsubishi": {
+    name: "ميتسوبيشي", models: {
+      "attrage": { name: "أتراج", years: ["2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.2L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 0W-16", spec: "API SN/GF-5", capacity: "3.0-3.2 لتر", interval: "كل 10,000 كم", note: "اقتصادية جداً." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Mitsubishi Original Coolant (أخضر)", spec: "Phosphate-free", capacity: "5 لتر", interval: "كل 4 سنوات", note: "سائل ميتسوبيشي الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Mitsubishi CVT Fluid J4", spec: "CVT J4", capacity: "4 لتر", interval: "كل 40,000 كم", note: "أتراج CVT يحتاج زيت CVT مخصوص." }
+      }},
+      "eclipsecross": { name: "إكليبس كروس", years: ["2019","2020","2021","2022","2023","2024","2025"], engine: "1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN", capacity: "4.5 لتر", interval: "كل 10,000 كم", note: "SUV كوبيه." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Mitsubishi Original (أخضر)", spec: "Phosphate-free", capacity: "7 لتر", interval: "كل 4 سنوات", note: "سائل ميتسوبيشي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Mitsubishi CVT Fluid J4", spec: "CVT J4", capacity: "5 لتر", interval: "كل 40,000 كم", note: "زيت CVT مخصوص." }
+      }},
+      "expander": { name: "إكسباندر", years: ["2020","2021","2022","2023","2024","2025"], engine: "1.5L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20", spec: "API SN", capacity: "4.0 لتر", interval: "كل 10,000 كم", note: "SUV عائلية 7 مقاعد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Mitsubishi Original", spec: "Phosphate-free", capacity: "6 لتر", interval: "كل 4 سنوات", note: "سائل ميتسوبيشي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Mitsubishi CVT Fluid J4", spec: "CVT J4", capacity: "4-5 لتر", interval: "كل 40,000 كم", note: "زيت CVT." }
+      }},
+      "outlander": { name: "أوتلاندر", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "2.0L أو 2.4L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN", capacity: "4.3-4.5 لتر", interval: "كل 10,000 كم", note: "SUV عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Mitsubishi Original", spec: "Phosphate-free", capacity: "7-8 لتر", interval: "كل 4 سنوات", note: "سائل ميتسوبيشي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3 أو DOT 4", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Mitsubishi CVT Fluid J4", spec: "CVT J4", capacity: "5-6 لتر", interval: "كل 40,000 كم", note: "زيت CVT." }
+      }}
+    }
+  },
+  "toyota": {
+    name: "تويوتا", models: {
+      "corolla": { name: "كورولا", years: ["2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.6L Valvematic أو 1.8L Hybrid", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 (موصى به) أو 5W-30", spec: "API SP / ILSAC GF-6", capacity: "4.2 لتر مع الفلتر", interval: "كل 10,000 كم أو سنة", note: "تجنب 10W-40 لأنه يخنق نظام Valvematic." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Toyota SLLC (أحمر وردي فاتح)", spec: "OAT خالي من الفوسفات", capacity: "6.5 لتر", interval: "أول 160,000 كم، بعد كده كل 80,000 كم", note: "لا تستخدم سائل تبريد عادي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3 أو DOT 4", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين أو 40,000 كم", note: "فحص دوري كل 10,000 كم." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Toyota CVT Fluid FE", spec: "CVT FE", capacity: "4 لتر", interval: "كل 40,000 كم", note: "لا تستخدم زيت TC القديم." }
+      }},
+      "chr": { name: "سي إتش آر C-HR", years: ["2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.2T أو 1.8L هايبرد", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20", spec: "API SN / ILSAC GF-5", capacity: "4.2-4.4 لتر", interval: "كل 10,000 كم", note: "كروس أوفر رياضية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Toyota SLLC", spec: "OAT", capacity: "6-7 لتر", interval: "كل 80,000 كم", note: "سائل تويوتا الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Toyota CVT Fluid FE", spec: "CVT FE", capacity: "4 لتر", interval: "كل 40,000 كم", note: "زيت تويوتا الأصلي." }
+      }},
+      "fortuner": { name: "فورتشنر", years: ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "2.7L بنزين أو 2.8L ديزل", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN (بنزين) / CJ-4 (ديزل)", capacity: "5.5-7 لتر", interval: "كل 10,000 كم", note: "SUV كبيرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Toyota SLLC", spec: "OAT", capacity: "9 لتر", interval: "كل 80,000 كم", note: "سائل تويوتا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Toyota ATF WS", spec: "ATF", capacity: "7-9 لتر", interval: "كل 60,000 كم", note: "زيت تويوتا." }
+      }},
+      "yaris": { name: "ياريس", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.3L أو 1.5L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN / ILSAC GF-5", capacity: "3.5 لتر", interval: "كل 10,000 كم", note: "سيارة اقتصادية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Toyota SLLC", spec: "OAT", capacity: "5.5 لتر", interval: "كل 80,000 كم", note: "سائل تويوتا الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Toyota CVT Fluid FE", spec: "CVT", capacity: "3.5 لتر", interval: "كل 40,000 كم", note: "زيت تويوتا الأصلي." }
+      }},
+      "belta": { name: "بيلتا", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.5L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20", spec: "API SN", capacity: "3.1-3.2 لتر", interval: "كل 10,000 كم", note: "سيدان اقتصادية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Toyota SLLC", spec: "OAT", capacity: "5 لتر", interval: "كل 80,000 كم", note: "سائل تويوتا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Toyota CVT Fluid FE", spec: "CVT", capacity: "3.5 لتر", interval: "كل 40,000 كم", note: "زيت تويوتا." }
+      }}
+    }
+  },
+  "nissan": {
+    name: "نيسان", models: {
+      "sunny": { name: "صني", years: ["2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026","2027"], engine: "1.5L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 (موصى به) أو 0W-20", spec: "API SN أو أعلى", capacity: "4.5 لتر مع الفلتر", interval: "كل 10,000 كم أو سنة", note: "صني من أكثر السيارات شيوعاً في مصر." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Nissan Long Life Antifreeze/Coolant (أزرق)", spec: "Glycol 50%", capacity: "7.5 لتر تقريباً", interval: "أول تغيير 160,000 كم، بعد كده كل 80,000 كم", note: "لا تخلط الأنواع المختلفة." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3 أو DOT 4", spec: "DOT 3 (الأصلي)", capacity: "0.5 لتر", interval: "كل سنتين أو 40,000 كم", note: "فحص دوري كل 10,000 كم." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Nissan CVT Fluid NS-2 أو NS-3", spec: "Matic S", capacity: "4 لتر (تغيير دوري)", interval: "كل 40,000 كم", note: "صني CVT حساس جداً لنوع الزيت." }
+      }},
+      "sentra": { name: "سنترا", years: ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.6L أو 1.8L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SN Plus", capacity: "4.5 لتر مع الفلتر", interval: "كل 10,000 كم أو سنة", note: "السنترا الحديثة تفضل 0W-20 لتوفير الوقود." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Nissan Long Life (أزرق)", spec: "Glycol 50%", capacity: "7.5 لتر", interval: "كل 80,000 كم أو 4 سنوات", note: "نفس سائل صني." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين أو 40,000 كم", note: "لا تخلط DOT 4 مع DOT 3." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Nissan CVT Fluid NS-3", spec: "CVT", capacity: "4-5 لتر", interval: "كل 40,000 كم", note: "استخدم زيت نيسان الأصلي فقط." }
+      }},
+      "qashqai": { name: "قشقاي J12", years: ["2022","2023","2024","2025","2026"], engine: "1.3T أو 1.5L هايبرد", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20", spec: "API SN", capacity: "5.0-5.6 لتر", interval: "كل 10,000 كم", note: "الجيل الجديد من قشقاي." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Nissan Long Life (أزرق)", spec: "Glycol 50%", capacity: "7-8 لتر", interval: "كل 80,000 كم", note: "سائل نيسان الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Nissan CVT Fluid NS-3", spec: "CVT", capacity: "5-6 لتر", interval: "كل 40,000 كم", note: "زيت نيسان الأصلي." }
+      }},
+      "juke": { name: "جوك", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.0T أو 1.6L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN", capacity: "4.1-4.8 لتر", interval: "كل 10,000 كم", note: "SUV صغيرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Nissan Long Life", spec: "Glycol 50%", capacity: "7 لتر", interval: "كل 80,000 كم", note: "سائل نيسان." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Nissan CVT Fluid NS-3", spec: "CVT", capacity: "4 لتر", interval: "كل 40,000 كم", note: "زيت نيسان." }
+      }}
+    }
+  },
+  // ==================== السيارات الصينية ====================
+  "geely": {
+    name: "جيلي", models: {
+      "coolray": { name: "كولراي", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "5.6 لتر", interval: "كل 10,000 كم", note: "SUV رياضية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Geely Original", spec: "OAT", capacity: "6 لتر", interval: "كل 4 سنوات", note: "سائل جيلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Geely DCT Fluid", spec: "DCT", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "okavango": { name: "أوكافانجو", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.8T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN أو SP", capacity: "4.5-6 لتر", interval: "كل 10,000 كم", note: "SUV عائلية 7 مقاعد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Geely Original", spec: "OAT", capacity: "7 لتر", interval: "كل 4 سنوات", note: "سائل جيلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Geely DCT Fluid", spec: "DCT", capacity: "6 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "gx3pro": { name: "GX3 Pro", years: ["2023","2024","2025","2026"], engine: "1.5L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN", capacity: "3.5 لتر", interval: "كل 10,000 كم", note: "SUV مدمجة اقتصادية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Geely Original", spec: "OAT", capacity: "5.5 لتر", interval: "كل 4 سنوات", note: "سائل جيلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Geely CVT Fluid", spec: "CVT", capacity: "4 لتر", interval: "كل 40,000 كم", note: "تحقق من النوع." }
+      }},
+      "starray": { name: "ستار راي", years: ["2024","2025","2026"], engine: "2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SP", capacity: "5.9-6.5 لتر", interval: "كل 10,000 كم", note: "SUV رياضية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Geely Original", spec: "OAT", capacity: "6 لتر", interval: "كل 4 سنوات", note: "سائل جيلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Geely DCT Fluid", spec: "DCT", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "mg": {
+    name: "إم جي", models: {
+      "zs": { name: "ZS", years: ["2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.5L بنزين أو 1.0T", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 5W-20", spec: "API SN/GF-5", capacity: "4.0-4.1 لتر", interval: "كل 10,000 كم", note: "من أكثر السيارات الصينية مبيعاً في مصر." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MG Original Coolant", spec: "OAT", capacity: "6 لتر", interval: "كل 4 سنوات", note: "استخدم سائل MG الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4 هو المعيار." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MG ATF أو CVT Fluid", spec: "حسب النوع", capacity: "4-6 لتر", interval: "كل 40,000 كم", note: "تحقق من نوع الفتيس." }
+      }},
+      "mg5": { name: "MG5", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.5L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN أو SP", capacity: "4.0-4.5 لتر", interval: "كل 10,000 كم", note: "سيدان اقتصادية شائعة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MG Original (أحمر)", spec: "OAT", capacity: "5.5 لتر", interval: "كل 4 سنوات", note: "لا تخلط الأنواع." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MG CVT Fluid", spec: "CVT", capacity: "4 لتر", interval: "كل 40,000 كم", note: "MG5 CVT يحتاج زيت CVT مخصوص." }
+      }},
+      "mg6": { name: "MG6", years: ["2019","2020","2021","2022","2023","2024","2025"], engine: "1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN", capacity: "4.5-5.1 لتر", interval: "كل 10,000 كم", note: "سيدان رياضية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MG Original", spec: "OAT", capacity: "6 لتر", interval: "كل 4 سنوات", note: "سائل MG." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MG DCT Fluid", spec: "DCT", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "rx5": { name: "MG RX5", years: ["2019","2020","2021","2022","2023","2024","2025"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20", spec: "API SP", capacity: "4.0-5.2 لتر", interval: "كل 10,000 كم", note: "SUV عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MG Original", spec: "OAT", capacity: "7.1-8.2 لتر", interval: "كل 4 سنوات", note: "سائل MG." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MG DCT Fluid", spec: "DCT", capacity: "6 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "hs": { name: "MG HS", years: ["2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "4.0-6.0 لتر", interval: "كل 10,000 كم", note: "SUV عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MG Original", spec: "OAT", capacity: "7 لتر", interval: "كل 4 سنوات", note: "سائل MG." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MG DCT Fluid", spec: "DCT", capacity: "5-6 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "chery": {
+    name: "شيري", models: {
+      "arrizo5": { name: "أريزو 5", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.5L أو 1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SL أو SN", capacity: "4.0-4.5 لتر", interval: "كل 10,000 كم أو سنة", note: "من أكثر السيارات الصينية مبيعاً في مصر." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Chery Original Coolant (أحمر/أخضر)", spec: "OAT", capacity: "6 لتر", interval: "كل 4 سنوات أو 60,000 كم", note: "استخدم سائل شيري الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين أو 40,000 كم", note: "DOT 4 هو الأفضل." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Chery CVT Fluid أو ATF", spec: "حسب النوع", capacity: "4-5 لتر", interval: "كل 40,000 كم (CVT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "tiggo7pro": { name: "تيجو 7 برو", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 1.6T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "4.5-4.7 لتر", interval: "كل 10,000 كم", note: "SUV عائلي شائع." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Chery Original (أحمر)", spec: "OAT", capacity: "7.5 لتر", interval: "كل 4 سنوات", note: "لا تخلط." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Chery CVT أو DCT Fluid", spec: "حسب النوع", capacity: "5-7 لتر", interval: "كل 40,000 كم (CVT) أو 50,000 كم (DCT)", note: "تحقق من النوع." }
+      }},
+      "tiggo8pro": { name: "تيجو 8 برو", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.6T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "4.0-5.0 لتر", interval: "كل 10,000 كم", note: "SUV عائلي 7 مقاعد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Chery Original", spec: "OAT", capacity: "8 لتر", interval: "كل 4 سنوات", note: "سائل شيري الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Chery DCT أو ATF", spec: "حسب النوع", capacity: "6-8 لتر", interval: "كل 50,000 كم (DCT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "haval": {
+    name: "هافال", models: {
+      "jolion": { name: "جوليون", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.5T بنزين أو هايبرد", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-20 أو 5W-30", spec: "API SN أو SP", capacity: "3.8-4.5 لتر", interval: "كل 10,000 كم", note: "SUV مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Haval Original", spec: "OAT", capacity: "6-6.7 لتر", interval: "كل 4 سنوات", note: "سائل هافال." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Haval DCT Fluid", spec: "DCT", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "h6": { name: "إتش 6 H6", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN أو SP", capacity: "4.0-5.0 لتر", interval: "كل 10,000 كم", note: "SUV عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Haval Original", spec: "OAT", capacity: "7 لتر", interval: "كل 4 سنوات", note: "سائل هافال." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Haval DCT Fluid", spec: "DCT", capacity: "6 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "changan": {
+    name: "شانجان", models: {
+      "cs35plus": { name: "CS35 Plus", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.4T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN أو SP", capacity: "4.0 لتر", interval: "كل 10,000 كم", note: "SUV مدمجة شائعة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Changan Original", spec: "OAT", capacity: "6 لتر", interval: "كل 4 سنوات", note: "سائل شانجان الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Changan DCT Fluid", spec: "DCT", capacity: "4-5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "cs55plus": { name: "CS55 Plus", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN أو SP", capacity: "4.5 لتر", interval: "كل 10,000 كم", note: "من أكثر السيارات الصينية مبيعاً." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Changan Original", spec: "OAT", capacity: "6.5 لتر", interval: "كل 4 سنوات", note: "سائل شانجان." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Changan DCT Fluid", spec: "DCT", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "unit": { name: "UNI-T", years: ["2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SP", capacity: "4.0-4.5 لتر", interval: "كل 10,000 كم", note: "SUV كوبيه رياضية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Changan Original", spec: "OAT", capacity: "6.5 لتر", interval: "كل 4 سنوات", note: "سائل شانجان." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Changan DCT Fluid", spec: "DCT", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  // ==================== السيارات الأوروبية والأمريكية ====================
+  "peugeot": {
+    name: "بيجو", models: {
+      "2008": { name: "2008", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.2T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C2", capacity: "3.5 لتر", interval: "كل 15,000 كم", note: "SUV مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Peugeot Original Coolant", spec: "OAT", capacity: "5.5 لتر", interval: "كل 5 سنوات", note: "سائل بيجو الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Peugeot ATF أو DCT Fluid", spec: "حسب النوع", capacity: "4-5 لتر", interval: "كل 50,000 كم (DCT) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "3008": { name: "3008", years: ["2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.2T أو 1.6T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C2", capacity: "3.5-4.5 لتر", interval: "كل 15,000 كم", note: "SUV عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Peugeot Original", spec: "OAT", capacity: "6 لتر", interval: "كل 5 سنوات", note: "سائل بيجو." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Peugeot ATF", spec: "ATF", capacity: "5-6 لتر", interval: "كل 60,000 كم", note: "تحقق من النوع." }
+      }},
+      "5008": { name: "5008", years: ["2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.2T أو 1.6T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C2", capacity: "3.5-4.5 لتر", interval: "كل 15,000 كم", note: "SUV كبيرة 7 مقاعد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Peugeot Original", spec: "OAT", capacity: "7 لتر", interval: "كل 5 سنوات", note: "سائل بيجو." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Peugeot ATF", spec: "ATF", capacity: "6 لتر", interval: "كل 60,000 كم", note: "تحقق من النوع." }
+      }},
+      "508": { name: "508", years: ["2019","2020","2021","2022","2023","2024","2025"], engine: "1.6T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C2", capacity: "4.25-4.5 لتر", interval: "كل 15,000 كم", note: "سيدان فاخرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Peugeot Original", spec: "OAT", capacity: "6.5 لتر", interval: "كل 5 سنوات", note: "سائل بيجو." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Peugeot ATF", spec: "ATF", capacity: "5-6 لتر", interval: "كل 60,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "mercedes": {
+    name: "مرسيدس", models: {
+      "aclass": { name: "الفئة A", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.6T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "MB 229.5 أو 229.51", capacity: "5.0-5.5 لتر", interval: "كل 15,000 كم", note: "استخدم زيت معتمد من مرسيدس." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MB Original Coolant (أزرق)", spec: "OAT", capacity: "7 لتر", interval: "كل 5 سنوات", note: "سائل مرسيدس الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4 Plus", spec: "DOT 4 Plus", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4 Plus مطلوب لمرسيدس." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MB 7G-Tronic أو 9G-Tronic Fluid", spec: "MB Approved", capacity: "6-8 لتر", interval: "كل 60,000 كم", note: "زيت مرسيدس الأصلي." }
+      }},
+      "cclass": { name: "الفئة C", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.6T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "MB 229.5 أو 229.51", capacity: "5.5-6.0 لتر", interval: "كل 15,000 كم", note: "زيت مرسيدس المعتمد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MB Original (أزرق)", spec: "OAT", capacity: "8 لتر", interval: "كل 5 سنوات", note: "سائل مرسيدس." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4 Plus", spec: "DOT 4 Plus", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4 Plus." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MB 9G-Tronic Fluid", spec: "MB Approved", capacity: "7-9 لتر", interval: "كل 60,000 كم", note: "زيت مرسيدس الأصلي." }
+      }},
+      "eclass": { name: "الفئة E", years: ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "2.0T أو 3.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "MB 229.5 أو 229.51", capacity: "6.0-6.5 لتر", interval: "كل 15,000 كم", note: "زيت مرسيدس المعتمد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MB Original (أزرق)", spec: "OAT", capacity: "9 لتر", interval: "كل 5 سنوات", note: "سائل مرسيدس." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4 Plus", spec: "DOT 4 Plus", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4 Plus." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MB 9G-Tronic Fluid", spec: "MB Approved", capacity: "8-10 لتر", interval: "كل 60,000 كم", note: "زيت مرسيدس." }
+      }},
+      "glc": { name: "GLC", years: ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "MB 229.5", capacity: "6.0-6.5 لتر", interval: "كل 15,000 كم", note: "SUV متوسطة فاخرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "MB Original (أزرق)", spec: "OAT", capacity: "9 لتر", interval: "كل 5 سنوات", note: "سائل مرسيدس." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4 Plus", spec: "DOT 4 Plus", capacity: "0.5 لتر", interval: "كل سنتين", note: "DOT 4 Plus." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "MB 9G-Tronic Fluid", spec: "MB Approved", capacity: "8-9 لتر", interval: "كل 60,000 كم", note: "زيت مرسيدس." }
+      }}
+    }
+  },
+  "skoda": {
+    name: "سكودا", models: {
+      "octavia": { name: "أوكتافيا A8", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "API SN، ACEA C3", capacity: "4.3-5.7 لتر", interval: "كل 15,000 كم", note: "سيدان عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Skoda Original Coolant (وردي)", spec: "OAT", capacity: "6-7 لتر", interval: "كل 5 سنوات", note: "سائل سكودا الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Skoda DSG Fluid أو ATF", spec: "حسب النوع", capacity: "5-7 لتر", interval: "كل 50,000 كم (DSG) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "kodiaq": { name: "كودياك", years: ["2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.4T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "API SN، ACEA C3", capacity: "5.7-6.6 لتر", interval: "كل 15,000 كم", note: "SUV كبيرة 7 مقاعد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Skoda Original (وردي)", spec: "OAT", capacity: "8 لتر", interval: "كل 5 سنوات", note: "سائل سكودا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Skoda DSG Fluid", spec: "DSG", capacity: "6-7 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "karooq": { name: "كاروك", years: ["2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C3", capacity: "4.3-4.8 لتر", interval: "كل 15,000 كم", note: "SUV مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Skoda Original (وردي)", spec: "OAT", capacity: "6 لتر", interval: "كل 5 سنوات", note: "سائل سكودا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Skoda DSG Fluid", spec: "DSG", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "kamiq": { name: "كاميك", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.0T أو 1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C3", capacity: "4.3-4.8 لتر", interval: "كل 15,000 كم", note: "SUV مدمجة صغيرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Skoda Original (وردي)", spec: "OAT", capacity: "5.5 لتر", interval: "كل 5 سنوات", note: "سائل سكودا." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Skoda DSG Fluid", spec: "DSG", capacity: "4-5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "volkswagen": {
+    name: "فولكس فاجن", models: {
+      "tiguan": { name: "تيجوان", years: ["2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.4T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "API SN، ACEA C3", capacity: "4.6-5.7 لتر", interval: "كل 15,000 كم", note: "SUV عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "VW Original Coolant (وردي)", spec: "OAT", capacity: "7 لتر", interval: "كل 5 سنوات", note: "سائل فولكس فاجن." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "VW DSG Fluid أو ATF", spec: "حسب النوع", capacity: "5-7 لتر", interval: "كل 50,000 كم (DSG) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "passat": { name: "باسات", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.4T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-30", spec: "API SN، ACEA C3", capacity: "4.5-5.7 لتر", interval: "كل 15,000 كم", note: "سيدان فاخرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "VW Original (وردي)", spec: "OAT", capacity: "7 لتر", interval: "كل 5 سنوات", note: "سائل فولكس فاجن." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "VW DSG Fluid أو ATF", spec: "حسب النوع", capacity: "5-7 لتر", interval: "كل 50,000 كم (DSG) أو 60,000 كم (AT)", note: "تحقق من النوع." }
+      }},
+      "golf8": { name: "جولف 8", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C3", capacity: "4.0-4.3 لتر", interval: "كل 15,000 كم", note: "هاتشباك رياضية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "VW Original (وردي)", spec: "OAT", capacity: "5.5 لتر", interval: "كل 5 سنوات", note: "سائل فولكس فاجن." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "VW DSG Fluid", spec: "DSG", capacity: "4-5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "tiroc": { name: "تي روك T-Roc", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.0T أو 1.5T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C3", capacity: "4.3-4.5 لتر", interval: "كل 15,000 كم", note: "SUV مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "VW Original (وردي)", spec: "OAT", capacity: "5.5 لتر", interval: "كل 5 سنوات", note: "سائل فولكس فاجن." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "VW DSG Fluid", spec: "DSG", capacity: "4-5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "seat": {
+    name: "سيات", models: {
+      "leon": { name: "ليون", years: ["2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C3", capacity: "4.3-5.7 لتر", interval: "كل 15,000 كم", note: "هاتشباك رياضية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Seat Original Coolant (وردي)", spec: "OAT", capacity: "6 لتر", interval: "كل 5 سنوات", note: "سائل سيات الأصلي." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Seat DSG Fluid", spec: "DSG", capacity: "5-6 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "tarraco": { name: "تاراكو", years: ["2020","2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C3", capacity: "4.3-5.7 لتر", interval: "كل 15,000 كم", note: "SUV كبيرة 7 مقاعد." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Seat Original (وردي)", spec: "OAT", capacity: "7 لتر", interval: "كل 5 سنوات", note: "سائل سيات." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Seat DSG Fluid", spec: "DSG", capacity: "6-7 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }},
+      "ateca": { name: "أتيكا", years: ["2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "0W-30 أو 5W-30", spec: "API SN، ACEA C3", capacity: "4.3-4.5 لتر", interval: "كل 15,000 كم", note: "SUV مدمجة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Seat Original (وردي)", spec: "OAT", capacity: "6 لتر", interval: "كل 5 سنوات", note: "سائل سيات." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Seat DSG Fluid", spec: "DSG", capacity: "5 لتر", interval: "كل 50,000 كم", note: "تحقق من النوع." }
+      }}
+    }
+  },
+  "chevrolet": {
+    name: "شيفروليه", models: {
+      "captiva": { name: "كابتيفا", years: ["2010","2011","2012","2013","2014","2015","2016","2017","2018"], engine: "2.4L بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN، GM-LL-A", capacity: "5.0-6.2 لتر", interval: "كل 10,000 كم", note: "SUV عائلية." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Dex-Cool", spec: "Dex-Cool", capacity: "8-9 لتر", interval: "كل 5 سنوات", note: "Dex-Cool." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Dexron VI", spec: "Dexron VI", capacity: "7-8 لتر", interval: "كل 60,000 كم", note: "Dexron VI." }
+      }},
+      "malibu": { name: "ماليبو", years: ["2016","2017","2018","2019","2020","2021","2022","2023","2024","2025"], engine: "1.5T أو 2.0T بنزين", fluids: {
+        engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30 أو 0W-20", spec: "API SN، Dexos1", capacity: "4.2-5.0 لتر", interval: "كل 10,000 كم", note: "سيدان فاخرة." },
+        coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Dex-Cool", spec: "Dex-Cool", capacity: "7 لتر", interval: "كل 5 سنوات", note: "Dex-Cool." },
+        brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 3 أو DOT 4", spec: "DOT 3", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
+        transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Dexron VI", spec: "Dexron VI", capacity: "6-7 لتر", interval: "كل 60,000 كم", note: "Dexron VI." }
+      }}
+    }
+  }
+};
+
+// ============================================================
+// تطبيع فترات زيت الفتيس حسب النوع
+// ============================================================
+(function normalizeTransmissionIntervals() {
+  for (const makeKey in CAR_DATA) {
+    for (const modelKey in CAR_DATA[makeKey].models) {
+      const t = CAR_DATA[makeKey].models[modelKey].fluids.transmission;
+      if (!t) continue;
+      if (t.interval && t.interval.includes('حسب النوع')) {
+        const spec = ((t.viscosity

@@ -1062,4 +1062,5 @@ const CAR_DATA = {
       const t = CAR_DATA[makeKey].models[modelKey].fluids.transmission;
       if (!t) continue;
       if (t.interval && t.interval.includes('حسب النوع')) {
-        const spec = ((t.viscosity
+        const spec = ((t.viscosity || '').toLowerCase());
+        if (spec.includes('cvt')) t.interval = 'كل 40,000 كم';

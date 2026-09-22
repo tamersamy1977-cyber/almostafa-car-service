@@ -572,6 +572,12 @@
   </div>
 
   <div id="remindersSection" class="results-section">
+    <div class="notification-settings">
+      <h3>🔔 إشعارات مواعيد التغيير</h3>
+      <p>فعّل إشعارات المتصفح ليذكّرك الموقع عند حلول تاريخ التنبيه. يجب إبقاء الموقع مفتوحًا في المتصفح.</p>
+      <button id="enableNotificationsBtn" class="notification-button" onclick="requestNotificationPermission()">تفعيل الإشعارات</button>
+      <div id="notificationStatus" class="notification-status" aria-live="polite"></div>
+    </div>
     <div class="empty-state" style="margin-top: 20px;">
       <div class="emoji">⏰</div>
       <p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل آخر تغيير لكل سائل عشان يظهرلك تنبيه.</p>
@@ -1189,11 +1195,55 @@ function reminderState(date) {
 function renderReminders() {
   if (!remindersSection) return;
   const reminders = readReminders();
-  if (!reminders.length) { remindersSection.innerHTML = '<div class="empty-state" style="margin-top:20px"><div class="emoji">⏰</div><p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل آخر تغيير لكل سائل عشان يظهرلك تنبيه.</p></div>'; return; }
-  remindersSection.innerHTML = reminders.map((item, index) => { const [state, label] = reminderState(item.date); return `<div class="reminder-card"><div class="reminder-card-header"><div><div class="reminder-card-title">${item.fluidName} · ${item.makeName} ${item.modelName}</div><div class="reminder-card-subtitle">آخر تغيير: ${item.date} · ${item.interval}</div></div><button class="reminder-delete-btn" onclick="deleteReminder(${index})">حذف</button></div><div class="reminder-status ${state}">${label}</div></div>`; }).join('');
+  const settings = `<div class="notification-settings"><h3>🔔 إشعارات مواعيد التغيير</h3><p>فعّل إشعارات المتصفح ليذكّرك الموقع عند حلول تاريخ التنبيه. يجب إبقاء الموقع مفتوحًا في المتصفح.</p><button id="enableNotificationsBtn" class="notification-button" onclick="requestNotificationPermission()">تفعيل الإشعارات</button><div id="notificationStatus" class="notification-status" aria-live="polite"></div></div>`;
+  if (!reminders.length) { remindersSection.innerHTML = settings + '<div class="empty-state" style="margin-top:20px"><div class="emoji">⏰</div><p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل موعد التغيير القادم لكل سائل عشان يظهرلك تنبيه.</p></div>'; updateNotificationUI(); return; }
+  remindersSection.innerHTML = settings + reminders.map((item, index) => { const [state, label] = reminderState(item.date); return `<div class="reminder-card"><div class="reminder-card-header"><div><div class="reminder-card-title">${item.fluidName} · ${item.makeName} ${item.modelName}</div><div class="reminder-card-subtitle">موعد التغيير: ${item.date} · ${item.interval}</div></div><button class="reminder-delete-btn" onclick="deleteReminder(${index})">حذف</button></div><div class="reminder-status ${state}">${label}</div></div>`; }).join('');
+  updateNotificationUI();
+}
+
+function updateNotificationUI() {
+  const button = document.getElementById('enableNotificationsBtn');
+  const status = document.getElementById('notificationStatus');
+  if (!button || !status) return;
+  if (!('Notification' in window)) { button.disabled = true; status.textContent = 'هذا المتصفح لا يدعم إشعارات الويب.'; return; }
+  if (Notification.permission === 'granted') { button.textContent = '✅ الإشعارات مفعّلة'; status.textContent = 'سيتم فحص المواعيد أثناء بقاء الموقع مفتوحًا.'; return; }
+  if (Notification.permission === 'denied') { button.disabled = true; status.textContent = 'الإشعارات مرفوضة. فعّلها من إعدادات المتصفح.'; return; }
+  status.textContent = 'اضغط الزر للسماح بالإشعارات.';
+}
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return updateNotificationUI();
+  const permission = await Notification.requestPermission();
+  updateNotificationUI();
+  if (permission === 'granted') checkDueNotifications();
+}
+function checkDueNotifications() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const today = new Date().toISOString().slice(0, 10);
+  const notified = JSON.parse(localStorage.getItem('notifiedFluidReminders') || '{}');
+  readReminders().forEach(item => {
+    if (item.date <= today) {
+      const key = `${item.make}-${item.model}-${item.fluidKey}-${item.date}`;
+      if (!notified[key]) {
+        new Notification('موعد صيانة السيارة', { body: `${item.fluidName} لـ ${item.makeName} ${item.modelName} جاهز للتغيير.`, tag: key });
+        notified[key] = Date.now();
+      }
+    }
+  });
+  localStorage.setItem('notifiedFluidReminders', JSON.stringify(notified));
 }
 
 document.addEventListener('DOMContentLoaded', init);
+setInterval(checkDueNotifications, 60000);
 </script>
 </body>
 </html>
+  .notification-settings {
+    background: linear-gradient(135deg, rgba(4,20,40,0.06), rgba(255,184,0,0.08));
+    border: 1px solid rgba(4,20,40,0.1); border-radius: var(--radius);
+    padding: 16px 18px; margin: 20px 0 16px;
+  }
+  .notification-settings h3 { color: var(--navy); font-size: 15px; margin-bottom: 6px; }
+  .notification-settings p { color: var(--text-muted); font-size: 12px; line-height: 1.7; margin-bottom: 12px; }
+  .notification-button { width: 100%; padding: 13px 16px; border: 0; border-radius: 12px; background: var(--navy); color: #fff; font-family: inherit; font-weight: 700; cursor: pointer; }
+  .notification-button:disabled { opacity: .65; cursor: not-allowed; }
+  .notification-status { font-size: 12px; font-weight: 700; margin-top: 10px; }

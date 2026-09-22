@@ -1064,3 +1064,136 @@ const CAR_DATA = {
       if (t.interval && t.interval.includes('حسب النوع')) {
         const spec = ((t.viscosity || '').toLowerCase());
         if (spec.includes('cvt')) t.interval = 'كل 40,000 كم';
+        else if (spec.includes('atf')) t.interval = 'كل 60,000 كم';
+      }
+    }
+  }
+})();
+
+const makeSelect = document.getElementById('makeSelect');
+const modelSelect = document.getElementById('modelSelect');
+const yearSelect = document.getElementById('yearSelect');
+const kmInput = document.getElementById('kmInput');
+const inputSection = document.getElementById('inputSection');
+const resultsSection = document.getElementById('resultsSection');
+const remindersSection = document.getElementById('remindersSection');
+const loading = document.getElementById('loading');
+const fluidsContainer = document.getElementById('fluidsContainer');
+const tabsContainer = document.getElementById('tabsContainer');
+const alertsContainer = document.getElementById('alertsContainer');
+const carBadge = document.getElementById('carBadge');
+
+function fillSelect(select, items, placeholder) {
+  select.innerHTML = `<option value="">${placeholder}</option>`;
+  items.forEach(item => {
+    const option = document.createElement('option');
+    option.value = item.value;
+    option.textContent = item.label;
+    select.appendChild(option);
+  });
+  select.disabled = items.length === 0;
+}
+
+function init() {
+  fillSelect(makeSelect, Object.entries(CAR_DATA).map(([value, car]) => ({ value, label: car.name })), 'اختر الماركة');
+  makeSelect.addEventListener('change', () => {
+    const car = CAR_DATA[makeSelect.value];
+    fillSelect(modelSelect, car ? Object.entries(car.models).map(([value, model]) => ({ value, label: model.name })) : [], 'اختر الموديل أولاً');
+    fillSelect(yearSelect, [], 'اختر السنة');
+  });
+  modelSelect.addEventListener('change', () => {
+    const model = CAR_DATA[makeSelect.value]?.models[modelSelect.value];
+    fillSelect(yearSelect, model ? model.years.map(year => ({ value: year, label: year })) : [], 'اختر السنة');
+  });
+  renderReminders();
+}
+
+function getSelectedModel() {
+  return CAR_DATA[makeSelect.value]?.models[modelSelect.value];
+}
+
+function searchFluids() {
+  const model = getSelectedModel();
+  if (!makeSelect.value || !modelSelect.value || !yearSelect.value) {
+    alert('من فضلك اختر الماركة والموديل وسنة الصنع أولاً.');
+    return;
+  }
+  loading.classList.add('active');
+  inputSection.classList.remove('active');
+  setTimeout(() => {
+    loading.classList.remove('active');
+    resultsSection.classList.add('active');
+    renderResults(model);
+    switchTab('results');
+  }, 250);
+}
+
+function renderResults(model) {
+  const car = CAR_DATA[makeSelect.value];
+  carBadge.innerHTML = `<div class="car-badge"><div class="car-badge-icon">🚗</div><div class="car-badge-info"><h3>${car.name} ${model.name}</h3><p>موديل ${yearSelect.value} · ${model.engine}</p></div></div>`;
+  const fluids = Object.entries(model.fluids);
+  tabsContainer.innerHTML = fluids.map(([key, fluid], i) => `<button class="tab-btn${i === 0 ? ' active' : ''}" data-fluid="${key}" onclick="showFluid('${key}')">${fluid.icon} ${fluid.name}</button>`).join('');
+  fluidsContainer.innerHTML = fluids.map(([key, fluid], i) => `<article class="fluid-card" data-fluid-card="${key}" style="animation-delay:${i * 70}ms"><div class="fluid-header"><div class="fluid-icon ${fluid.cls}">${fluid.icon}</div><h3 class="fluid-title">${fluid.name}</h3></div><div class="fluid-spec"><span class="label">النوع</span><span class="value">${fluid.viscosity}</span></div><div class="fluid-spec"><span class="label">المواصفة</span><span class="value">${fluid.spec}</span></div><div class="fluid-spec"><span class="label">السعة</span><span class="value">${fluid.capacity}</span></div><div class="fluid-spec"><span class="label">التغيير</span><span class="value gold">${fluid.interval}</span></div><div class="fluid-note">${fluid.note}</div><div class="reminder-section"><div class="reminder-title">⏰ سجّل آخر تغيير للتذكير</div><div class="reminder-input-row"><input class="reminder-input" type="date" id="date-${key}" aria-label="تاريخ آخر تغيير"><button class="reminder-save-btn" onclick="saveReminder('${key}')">حفظ</button></div><div id="status-${key}"></div></div></article>`).join('');
+  alertsContainer.innerHTML = `<div class="alert-box warning"><div class="alert-icon">⚠️</div><div class="alert-content"><h4>تنبيه مهم</h4><p>المواعيد إرشادية. راجع كتيب سيارتك واستعن بفني متخصص قبل تغيير أي سائل.</p></div></div>`;
+  showFluid(fluids[0]?.[0]);
+}
+
+function showFluid(key) {
+  document.querySelectorAll('[data-fluid-card]').forEach(card => { card.style.display = card.dataset.fluidCard === key ? 'block' : 'none'; });
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.fluid === key));
+}
+
+function resetForm() {
+  resultsSection.classList.remove('active');
+  inputSection.classList.add('active');
+  switchTab('home');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  document.getElementById(tab === 'home' ? 'navHome' : tab === 'results' ? 'navResults' : 'navReminders').classList.add('active');
+  inputSection.classList.toggle('active', tab === 'home');
+  resultsSection.classList.toggle('active', tab === 'results' && !!resultsSection.querySelector('.car-badge'));
+  remindersSection.classList.toggle('active', tab === 'reminders');
+  if (tab === 'reminders') renderReminders();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openCallModal() { document.getElementById('callModal').classList.add('active'); }
+function closeCallModal(event) {
+  if (!event || event.target.id === 'callModal') document.getElementById('callModal').classList.remove('active');
+}
+
+function readReminders() {
+  try { return JSON.parse(localStorage.getItem('carFluidReminders') || '[]'); } catch (_) { return []; }
+}
+function writeReminders(items) { localStorage.setItem('carFluidReminders', JSON.stringify(items)); }
+function saveReminder(fluidKey) {
+  const dateInput = document.getElementById(`date-${fluidKey}`);
+  if (!dateInput.value) { alert('اختر تاريخ آخر تغيير أولاً.'); return; }
+  const model = getSelectedModel();
+  const fluid = model?.fluids[fluidKey];
+  if (!model || !fluid) return;
+  const reminders = readReminders().filter(item => !(item.make === makeSelect.value && item.model === modelSelect.value && item.fluidKey === fluidKey));
+  reminders.push({ make: makeSelect.value, makeName: CAR_DATA[makeSelect.value].name, model: modelSelect.value, modelName: model.name, year: yearSelect.value, fluidKey, fluidName: fluid.name, interval: fluid.interval, date: dateInput.value });
+  writeReminders(reminders);
+  renderReminders();
+  const status = document.getElementById(`status-${fluidKey}`);
+  if (status) status.innerHTML = '<div class="reminder-status ok">✅ تم حفظ التذكير بنجاح</div>';
+}
+function deleteReminder(index) { const reminders = readReminders(); reminders.splice(index, 1); writeReminders(reminders); renderReminders(); }
+function reminderState(date) {
+  const days = Math.round((Date.parse(date + 'T00:00:00') - Date.now()) / 86400000);
+  return days < 0 ? ['overdue', 'متأخر'] : days <= 30 ? ['soon', `متبقي ${days} يوم` ] : ['ok', `موعد التغيير بعد ${days} يوم`];
+}
+function renderReminders() {
+  if (!remindersSection) return;
+  const reminders = readReminders();
+  if (!reminders.length) { remindersSection.innerHTML = '<div class="empty-state" style="margin-top:20px"><div class="emoji">⏰</div><p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل آخر تغيير لكل سائل عشان يظهرلك تنبيه.</p></div>'; return; }
+  remindersSection.innerHTML = reminders.map((item, index) => { const [state, label] = reminderState(item.date); return `<div class="reminder-card"><div class="reminder-card-header"><div><div class="reminder-card-title">${item.fluidName} · ${item.makeName} ${item.modelName}</div><div class="reminder-card-subtitle">آخر تغيير: ${item.date} · ${item.interval}</div></div><button class="reminder-delete-btn" onclick="deleteReminder(${index})">حذف</button></div><div class="reminder-status ${state}">${label}</div></div>`; }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

@@ -566,6 +566,14 @@
         <label class="form-label">🔖 الفئة / الجيل</label>
         <select id="variantSelect" class="form-select" disabled><option value="">اختر الفئة أولاً</option></select>
       </div>
+      <div class="form-group hidden" id="engineGroup">
+        <label class="form-label">🔩 المحرك</label>
+        <select id="engineSelect" class="form-select"><option value="">اختيار المحرك</option></select>
+      </div>
+      <div class="form-group hidden" id="transmissionGroup">
+        <label class="form-label">⚙️ ناقل الحركة</label>
+        <select id="transmissionSelect" class="form-select"><option value="">اختيار ناقل الحركة</option></select>
+      </div>
       <div class="form-group">
         <label class="form-label">📅 سنة الصنع</label>
         <select id="yearSelect" class="form-select" disabled><option value="">اختر السنة</option></select>
@@ -2364,6 +2372,80 @@ Object.entries(EXTRA_MODEL_GROUPS).forEach(([makeKey, groups]) => {
   });
 });
 
+const OFFICIAL_MANUAL_PORTALS = {
+  hyundai: "https://owners.hyundaiusa.com/us/en/resources/manuals-warranties.html",
+  kia: "https://owners.kia.com/content/owners/en/manuals.html",
+  toyota: "https://www.toyota.com/owners/warranty-owners-manuals/",
+  nissan: "https://www.nissanusa.com/owners/ownership/manuals-guides.html",
+  chevrolet: "https://www.chevrolet.com/owner-center/vehicle-manuals",
+  peugeot: "https://www.peugeot.com/en/owners/maintenance-and-services.html",
+  volkswagen: "https://www.vwserviceandparts.com/digital-resources/online-owners-manual/",
+  skoda: "https://manual.skoda-auto.com/"
+};
+
+const POWERTRAIN_OPTIONS = {
+  hyundai: {
+    elantramd: {
+      engines: [{ value: "16", label: "1.6L بنزين" }],
+      transmissions: [{ value: "at", label: "أوتوماتيك 6 سرعات" }, { value: "mt", label: "مانيوال" }]
+    },
+    elantraad: {
+      engines: [{ value: "16", label: "1.6L بنزين" }, { value: "20", label: "2.0L بنزين" }],
+      transmissions: [{ value: "at", label: "أوتوماتيك" }, { value: "cvt", label: "IVT / CVT" }]
+    },
+    tucson: {
+      engines: [{ value: "16t", label: "1.6T بنزين" }, { value: "20", label: "2.0L بنزين" }],
+      transmissions: [{ value: "at", label: "أوتوماتيك" }, { value: "dct", label: "DCT" }]
+    }
+  },
+  kia: {
+    sportage: {
+      engines: [{ value: "16t", label: "1.6T بنزين" }, { value: "20", label: "2.0L بنزين" }],
+      transmissions: [{ value: "at", label: "أوتوماتيك" }, { value: "dct", label: "DCT" }]
+    },
+    grandcerato: {
+      engines: [{ value: "16", label: "1.6L بنزين" }, { value: "20", label: "2.0L بنزين" }],
+      transmissions: [{ value: "at", label: "أوتوماتيك" }, { value: "mt", label: "مانيوال" }]
+    }
+  },
+  toyota: {
+    corolla: {
+      engines: [{ value: "16", label: "1.6L بنزين" }, { value: "20", label: "2.0L بنزين" }],
+      transmissions: [{ value: "cvt", label: "CVT" }, { value: "at", label: "أوتوماتيك" }]
+    },
+    corollae210: {
+      engines: [{ value: "16", label: "1.6L بنزين" }, { value: "20", label: "2.0L بنزين" }],
+      transmissions: [{ value: "cvt", label: "CVT" }]
+    }
+  },
+  nissan: {
+    sunny: {
+      engines: [{ value: "15", label: "1.5L بنزين" }],
+      transmissions: [{ value: "cvt", label: "CVT" }, { value: "mt", label: "مانيوال" }]
+    },
+    sentra: {
+      engines: [{ value: "16", label: "1.6L بنزين" }, { value: "18", label: "1.8L بنزين" }],
+      transmissions: [{ value: "cvt", label: "CVT" }]
+    }
+  }
+};
+
+function getPowertrainOptions() {
+  return POWERTRAIN_OPTIONS[makeSelect.value]?.[variantSelect.value] || null;
+}
+
+function updatePowertrainSelects() {
+  const options = getPowertrainOptions();
+  const engineOptions = options?.engines || [];
+  const transmissionOptions = options?.transmissions || [];
+  fillSelect(engineSelect, engineOptions, 'اختيار المحرك');
+  fillSelect(transmissionSelect, transmissionOptions, 'اختيار ناقل الحركة');
+  engineGroup.classList.toggle('hidden', engineOptions.length < 2);
+  transmissionGroup.classList.toggle('hidden', transmissionOptions.length < 2);
+  if (engineOptions.length === 1) engineSelect.value = engineOptions[0].value;
+  if (transmissionOptions.length === 1) transmissionSelect.value = transmissionOptions[0].value;
+}
+
 // كل الماركات تمر بنفس التسلسل حتى لو لم تتوفر لها أجيال متعددة في قاعدة
 // البيانات. لا نسمّي الجيل من عندنا؛ نعرضه كـ "الفئة المتاحة" إلى أن تضاف
 // مواصفات أجيال أخرى مؤكدة.
@@ -2439,6 +2521,10 @@ function extractKmInterval(interval) {
 const makeSelect = document.getElementById('makeSelect');
 const modelSelect = document.getElementById('modelSelect');
 const variantSelect = document.getElementById('variantSelect');
+const engineSelect = document.getElementById('engineSelect');
+const transmissionSelect = document.getElementById('transmissionSelect');
+const engineGroup = document.getElementById('engineGroup');
+const transmissionGroup = document.getElementById('transmissionGroup');
 const yearSelect = document.getElementById('yearSelect');
 const kmInput = document.getElementById('kmInput');
 const inputSection = document.getElementById('inputSection');
@@ -2466,15 +2552,18 @@ function init() {
   makeSelect.addEventListener('change', () => {
     fillSelect(modelSelect, getModelGroups(makeSelect.value), 'اختر الموديل أولاً');
     fillSelect(variantSelect, [], 'اختر الفئة أولاً');
+    updatePowertrainSelects();
     fillSelect(yearSelect, [], 'اختر السنة');
   });
   modelSelect.addEventListener('change', () => {
     const variants = getModelVariants(makeSelect.value, modelSelect.value);
     fillSelect(variantSelect, variants, 'اختر الفئة / الجيل');
+    updatePowertrainSelects();
     fillSelect(yearSelect, [], 'اختر السنة');
   });
   variantSelect.addEventListener('change', () => {
     const model = CAR_DATA[makeSelect.value]?.models[variantSelect.value];
+    updatePowertrainSelects();
     fillSelect(yearSelect, model ? model.years.map(year => ({ value: year, label: year })) : [], 'اختر السنة');
   });
   renderReminders();
@@ -2486,8 +2575,11 @@ function getSelectedModel() {
 
 function searchFluids() {
   const model = getSelectedModel();
-  if (!makeSelect.value || !modelSelect.value || !variantSelect.value || !yearSelect.value) {
-    alert('من فضلك اختر الماركة والموديل والفئة وسنة الصنع أولاً.');
+  const powertrain = getPowertrainOptions();
+  if (!makeSelect.value || !modelSelect.value || !variantSelect.value || !yearSelect.value ||
+      (powertrain?.engines?.length > 1 && !engineSelect.value) ||
+      (powertrain?.transmissions?.length > 1 && !transmissionSelect.value)) {
+    alert('من فضلك أكمل اختيار الماركة والموديل والفئة والمحرك والفتيس وسنة الصنع.');
     return;
   }
   loading.classList.add('active');
@@ -2502,7 +2594,10 @@ function searchFluids() {
 
 function renderResults(model) {
   const car = CAR_DATA[makeSelect.value];
-  carBadge.innerHTML = `<div class="car-badge"><div class="car-badge-icon">🚗</div><div class="car-badge-info"><h3>${car.name} ${getSelectedModelLabel()}</h3><p>موديل ${yearSelect.value} · ${model.engine}</p></div></div>`;
+  const engine = engineSelect.value ? engineSelect.options[engineSelect.selectedIndex].text : model.engine;
+  const transmission = transmissionSelect.value ? transmissionSelect.options[transmissionSelect.selectedIndex].text : "";
+  const source = OFFICIAL_MANUAL_PORTALS[makeSelect.value];
+  carBadge.innerHTML = `<div class="car-badge"><div class="car-badge-icon">🚗</div><div class="car-badge-info"><h3>${car.name} ${getSelectedModelLabel()}</h3><p>موديل ${yearSelect.value} · ${engine}${transmission ? ` · ${transmission}` : ""}</p><p>المواصفات إرشادية حتى مراجعة كتيب نفس السيارة والمحرك.</p>${source ? `<a href="${source}" target="_blank" rel="noopener">📘 فتح بوابة الكتيب الرسمية</a>` : ""}</div></div>`;
   const fluids = Object.entries(model.fluids);
   tabsContainer.innerHTML = fluids.map(([key, fluid], i) => `<button class="tab-btn${i === 0 ? ' active' : ''}" data-fluid="${key}" onclick="showFluid('${key}')">${fluid.icon} ${fluid.name}</button>`).join('');
   fluidsContainer.innerHTML = fluids.map(([key, fluid], i) => `<article class="fluid-card" data-fluid-card="${key}" style="animation-delay:${i * 70}ms"><div class="fluid-header"><div class="fluid-icon ${fluid.cls}">${fluid.icon}</div><h3 class="fluid-title">${fluid.name}</h3></div><div class="fluid-spec"><span class="label">النوع</span><span class="value">${fluid.viscosity}</span></div><div class="fluid-spec"><span class="label">المواصفة</span><span class="value">${fluid.spec}</span></div><div class="fluid-spec"><span class="label">السعة</span><span class="value">${fluid.capacity}</span></div><div class="fluid-spec"><span class="label">التغيير</span><span class="value gold">${fluid.interval}</span></div><div class="fluid-note">${fluid.note}</div><div class="reminder-section"><div class="reminder-title">⏰ سجّل آخر تغيير</div><div class="reminder-input-row"><input class="reminder-input" type="number" id="km-${key}" placeholder="عداد الكيلومترات عند آخر تغيير" min="0" inputmode="numeric"><input class="reminder-input" type="date" id="date-${key}" aria-label="تاريخ آخر تغيير"><button class="reminder-save-btn" onclick="saveReminder('${key}')">حفظ</button></div><div class="reminder-meta">سجّل عداد الكيلومترات (‏أو التاريخ) لحساب موعد التغيير تلقائياً — الفاصل: ${fluid.interval}</div><div id="status-${key}"></div></div></article>`).join('');

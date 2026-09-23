@@ -2110,6 +2110,182 @@ CAR_DATA.hyundai.models.elantraad = {
 };
 delete CAR_DATA.hyundai.models.elantracn7;
 
+// موديلات إضافية شائعة، خصوصاً الأجيال القديمة المنتشرة في السوق المصري.
+// المواصفات مبدئية وإرشادية وتظل مراجعة كتيب السيارة هي المرجع النهائي.
+const EXTRA_MODELS = [
+  ["hyundai", "verna", "فيرنا", "2005-2017", "accentrb"],
+  ["hyundai", "excel", "إكسيل", "1992-1998", "elantrahd"],
+  ["kia", "pride", "برايد", "1999-2005", "picanto"],
+  ["kia", "sephia", "سيفيا", "1998-2003", "rio"],
+  ["kia", "cerato", "سيراتو", "2005-2020", "grandcerato"],
+  ["mitsubishi", "lancerevolution", "لانسر إيفولوشن", "2001-2015", "lancer"],
+  ["mitsubishi", "galant", "جالانت", "1999-2012", "lancer"],
+  ["mitsubishi", "spacewagon", "سبايس واجن", "1999-2007", "expander"],
+  ["toyota", "corollae100", "كورولا E100", "1992-1997", "corolla"],
+  ["toyota", "corollae120", "كورولا E120", "2002-2007", "corolla"],
+  ["toyota", "corollae140", "كورولا E140", "2008-2013", "corolla"],
+  ["toyota", "corollae170", "كورولا E170", "2014-2019", "corolla"],
+  ["nissan", "sunnyb13", "صني B13", "1992-1999", "sunny"],
+  ["nissan", "sunnyb15", "صني B15", "2000-2006", "sunny"],
+  ["nissan", "bluebird", "بلوبيرد", "1996-2001", "sentra"],
+  ["nissan", "micra", "ميكرا", "1993-2010", "tiida"],
+  ["chevrolet", "nubira", "نوبيرا", "1997-2008", "optra"],
+  ["chevrolet", "espero", "إسبيرو", "1995-1999", "optra"],
+  ["chevrolet", "tahoeold", "تاهو القديمة", "2000-2014", "tahoe"],
+  ["opel", "vectra", "فيكترا", "1996-2008", "astra"],
+  ["opel", "zafira", "زافيرا", "2000-2014", "astra"],
+  ["opel", "meriva", "ميريفا", "2003-2017", "corsa"],
+  ["fiat", "siena", "سيينا", "2001-2015", "tipo"],
+  ["fiat", "palio", "باليو", "1997-2018", "punto"],
+  ["fiat", "doblo", "دوبلو", "2001-2020", "tipo"],
+  ["lada", "2105", "لادا 2105", "1980-2010", "2107"],
+  ["lada", "kalina", "كالينا", "2004-2018", "granta"],
+  ["ford", "escort", "إسكورت", "1993-2004", "focus"],
+  ["ford", "fiesta", "فييستا", "1996-2020", "focus"],
+  ["renault", "laguna", "لاجونا", "1994-2015", "megane"],
+  ["renault", "scenic", "سينيك", "1996-2016", "megane"],
+  ["honda", "city", "سيتي", "2003-2020", "civic"],
+  ["suzuki", "apv", "APV", "2004-2018", "ertiga"],
+  ["volkswagen", "vento", "فينتو", "1992-1998", "jetta"],
+  ["volkswagen", "beetle", "بيتل", "1998-2019", "golf7"],
+  ["bmw", "serie1", "الفئة الأولى", "2004-2020", "serie3"],
+  ["audi", "tt", "TT", "1998-2020", "a3"],
+  ["mercedes", "bclass", "الفئة B", "2005-2020", "aclass"],
+  ["skoda", "rapid", "رابيد", "2013-2020", "octavia"],
+  ["hyundai", "elantraad2", "إلنترا AD", "2016-2020", "elantraad"],
+  ["hyundai", "sonata2011", "سوناتا YF", "2011-2014", "sonata"],
+  ["hyundai", "i30", "i30", "2010-2017", "i20"],
+  ["kia", "ceratoforte", "سيراتو فورتي", "2010-2016", "grandcerato"],
+  ["kia", "rio2012", "ريو UB", "2012-2017", "rio"],
+  ["kia", "sportageql", "سبورتاج QL", "2016-2021", "sportage"],
+  ["mitsubishi", "lancerex", "لانسر EX", "2010-2017", "lancer"],
+  ["mitsubishi", "asx2010", "ASX", "2010-2020", "asx"],
+  ["mitsubishi", "pajero2010", "باجيرو", "2010-2019", "pajero"],
+  ["toyota", "corollae210", "كورولا E210", "2019-2026", "corolla"],
+  ["toyota", "corollacross", "كورولا كروس", "2022-2026", "chr"],
+  ["toyota", "fortuner2012", "فورتشنر", "2012-2020", "fortuner"],
+  ["nissan", "sunny2020", "صني N17", "2010-2026", "sunny"],
+  ["nissan", "sentra2013", "سنترا B17", "2013-2019", "sentra"],
+  ["nissan", "qashqai2010", "قشقاي J10", "2010-2017", "qashqai"],
+  ["geely", "emgrand7", "إمجراند 7", "2012-2018", "emgrand"],
+  ["geely", "emgrandx7", "إمجراند X7", "2016-2020", "atlas"],
+  ["mg", "mg350", "MG 350", "2011-2016", "mg5"],
+  ["mg", "mg6old", "MG6", "2011-2019", "mg6"],
+  ["mg", "mgzs2020", "MG ZS", "2018-2026", "zs"],
+  ["chery", "arrizo3", "أريزو 3", "2015-2020", "arrizo5"],
+  ["chery", "tiggo7old", "تيجو 7", "2017-2020", "tiggo7pro"],
+  ["haval", "h6old", "H6", "2011-2020", "h6"],
+  ["changan", "cs35", "CS35", "2014-2021", "cs35plus"],
+  ["peugeot", "peugeot301", "بيجو 301", "2013-2022", "301"],
+  ["peugeot", "peugeot508old", "بيجو 508", "2011-2018", "508"],
+  ["mercedes", "eclass2010", "الفئة E W212", "2010-2016", "eclass"],
+  ["mercedes", "cclass2010", "الفئة C W204", "2010-2014", "cclass"],
+  ["skoda", "octaviaa7", "أوكتافيا A7", "2013-2020", "octavia"],
+  ["skoda", "fabia2010", "فابيا", "2010-2014", "fabia"],
+  ["volkswagen", "golf6", "جولف 6", "2010-2013", "golf7"],
+  ["volkswagen", "jetta2010", "جيتا", "2010-2018", "jetta"],
+  ["seat", "leon2013", "ليون", "2013-2020", "leon"],
+  ["chevrolet", "cruze2010", "كروز", "2010-2016", "cruze"],
+  ["chevrolet", "aveo2010", "أفيو", "2010-2019", "aveo"],
+  ["chevrolet", "lanos2010", "لانوس", "2010-2018", "lanos"],
+  ["opel", "astra2010", "أسترا J", "2010-2019", "astra"],
+  ["fiat", "tipo2016", "تيبو", "2016-2026", "tipo"],
+  ["ford", "focus2011", "فوكاس", "2011-2018", "focus"],
+  ["ford", "ecosport", "إيكوسبورت", "2013-2020", "escape"],
+  ["renault", "logan2010", "لوجان", "2010-2020", "logan"],
+  ["renault", "duster2012", "داستر", "2012-2024", "duster"],
+  ["honda", "civic2012", "سيفيك", "2012-2021", "civic"],
+  ["honda", "crv2010", "CR-V", "2010-2021", "crv"],
+  ["suzuki", "swift2011", "سويفت", "2011-2017", "swift"],
+  ["suzuki", "ciaz2015", "سياز", "2015-2020", "ciaz"],
+  ["mazda", "mazda3old", "مازدا 3", "2010-2018", "mazda3"],
+  ["bmw", "serie32010", "الفئة الثالثة", "2010-2018", "serie3"],
+  ["audi", "a4old", "A4", "2010-2019", "a4"],
+  ["jeep", "cherokee2014", "جراند شيروكي", "2014-2020", "grandcherokee"],
+  ["citroen", "celysee", "سي إليزيه", "2013-2022", "c4"],
+  ["volvo", "s60old", "S60", "2010-2018", "s60"],
+  ["lexus", "es2010", "ES", "2010-2018", "es"],
+  ["hyundai", "santafe2024", "سانتافي", "2024-2026", "santafe"],
+  ["hyundai", "kona2024", "كونا", "2024-2026", "creta"],
+  ["kia", "k42024", "K4", "2025-2026", "k5"],
+  ["kia", "sorento2024", "سورينتو", "2024-2026", "sorento"],
+  ["mitsubishi", "xforce", "XForce", "2024-2026", "asx"],
+  ["mitsubishi", "outlander2024", "أوتلاندر", "2024-2026", "outlander"],
+  ["toyota", "crown2024", "كراون", "2024-2026", "camry"],
+  ["toyota", "landcruiser2024", "لاند كروزر 300", "2024-2026", "landcruiser"],
+  ["nissan", "xtrail2024", "إكس تريل", "2024-2026", "xtrail"],
+  ["nissan", "patrol2024", "باترول", "2024-2026", "patrol"],
+  ["geely", "monjaro", "مونجارو", "2024-2026", "atlas"],
+  ["geely", "starray2024", "ستار راي", "2024-2026", "starray"],
+  ["mg", "whale", "MG Whale", "2024-2026", "hs"],
+  ["mg", "mg7new", "MG7", "2024-2026", "mg7"],
+  ["chery", "tiggo9", "تيجو 9", "2024-2026", "tiggo8pro"],
+  ["chery", "tiggo8new", "تيجو 8 برو", "2024-2026", "tiggo8"],
+  ["haval", "dargo", "دارجو", "2024-2026", "h6"],
+  ["haval", "h9new", "H9", "2024-2026", "h9"],
+  ["changan", "uniK", "UNI-K", "2024-2026", "unit"],
+  ["changan", "cs75new", "CS75 Plus", "2024-2026", "cs75"],
+  ["peugeot", "peugeot408", "بيجو 408", "2024-2026", "508"],
+  ["peugeot", "peugeot2008new", "بيجو 2008", "2024-2026", "2008"],
+  ["mercedes", "cle", "CLE", "2024-2026", "cla"],
+  ["mercedes", "glc2024", "GLC", "2024-2026", "glc"],
+  ["skoda", "kodiaq2024", "كودياك", "2024-2026", "kodiaq"],
+  ["skoda", "superb2024", "سوبيرب", "2024-2026", "superb"],
+  ["volkswagen", "tiguan2024", "تيجوان", "2024-2026", "tiguan"],
+  ["volkswagen", "passat2024", "باسات", "2024-2026", "passat"],
+  ["seat", "leon2024", "ليون", "2024-2026", "leon"],
+  ["chevrolet", "traverse2024", "ترافيرس", "2024-2026", "trailblazer"],
+  ["chevrolet", "equinox2024", "إكوينوكس", "2024-2026", "captiva"],
+  ["opel", "grandland2024", "جراند لاند", "2024-2026", "grandland"],
+  ["opel", "mokka2024", "موكا", "2024-2026", "mokka"],
+  ["fiat", "fiat600", "فيات 600", "2024-2026", "500x"],
+  ["fiat", "doblo2024", "دوبلو", "2024-2026", "tipo"],
+  ["ford", "territory", "تيري", "2024-2026", "escape"],
+  ["ford", "ranger2024", "رانجر", "2024-2026", "ranger"],
+  ["renault", "austral", "أوسترال", "2024-2026", "captur"],
+  ["renault", "arkana", "أركانا", "2024-2026", "duster"],
+  ["dacia", "jogger", "جوغر", "2024-2026", "duster"],
+  ["honda", "zrv", "ZR-V", "2024-2026", "hrv"],
+  ["honda", "city2024", "سيتي", "2024-2026", "city"],
+  ["suzuki", "fronx", "فرونكس", "2024-2026", "vitara"],
+  ["suzuki", "jimny2024", "جيمني", "2024-2026", "jimny"],
+  ["mazda", "cx60", "CX-60", "2024-2026", "cx5"],
+  ["mazda", "cx30new", "CX-30", "2024-2026", "cx30"],
+  ["bmw", "x2new", "X2", "2024-2026", "x1"],
+  ["bmw", "serie5new", "الفئة الخامسة", "2024-2026", "serie5"],
+  ["audi", "q8new", "Q8", "2024-2026", "q7"],
+  ["audi", "a5new", "A5", "2024-2026", "a4"],
+  ["jeep", "avenger", "أفِنجر", "2024-2026", "renegade"],
+  ["jeep", "wagoneer", "واجونير", "2024-2026", "grandcherokee"],
+  ["citroen", "c5x", "C5 X", "2024-2026", "c5"],
+  ["citroen", "c3aircross2024", "C3 Aircross", "2024-2026", "c5aircross"],
+  ["volvo", "ex30", "EX30", "2024-2026", "xc40"],
+  ["volvo", "ex90", "EX90", "2024-2026", "xc90"],
+  ["lexus", "lbx", "LBX", "2024-2026", "nx"],
+  ["lexus", "rx2024", "RX", "2024-2026", "rx"],
+  ["faw", "bestunet77", "بيستون T77", "2024-2026", "x40"],
+  ["brilliance", "v7new", "V7", "2024-2026", "v6"]
+];
+
+function yearsFromRange(range) {
+  const [from, to] = range.split("-").map(Number);
+  return Array.from({ length: to - from + 1 }, (_, index) => String(from + index));
+}
+
+EXTRA_MODELS.forEach(([makeKey, modelKey, name, years, sourceKey]) => {
+  const source = CAR_DATA[makeKey]?.models[sourceKey];
+  if (!source || CAR_DATA[makeKey].models[modelKey]) return;
+  CAR_DATA[makeKey].models[modelKey] = {
+    ...source,
+    name,
+    years: yearsFromRange(years),
+    fluids: Object.fromEntries(Object.entries(source.fluids).map(([key, fluid]) => [
+      key,
+      { ...fluid, note: `${fluid.note} المواصفة إرشادية لهذا الجيل؛ راجع كتيب السيارة.` }
+    ]))
+  };
+});
+
 // تجميع الموديلات في عائلات وأجيال. يمكن إضافة أي عائلة جديدة هنا بدون
 // تغيير قاعدة بيانات السوائل نفسها؛ كل variant يشير إلى موديل موجود بالأسفل.
 const MODEL_GROUPS = {
@@ -2119,7 +2295,8 @@ const MODEL_GROUPS = {
       variants: [
         { value: "elantrahd", label: "HD" },
         { value: "elantramd", label: "MD" },
-        { value: "elantraad", label: "AD" }
+        { value: "elantraad", label: "AD" },
+        { value: "elantraad2", label: "AD (2016-2020)" }
       ]
     },
     accent: {
@@ -2131,6 +2308,61 @@ const MODEL_GROUPS = {
     }
   }
 };
+
+const EXTRA_MODEL_GROUPS = {
+  toyota: {
+    corolla: [["corolla", "الجيل المسجل"], ["corollae100", "E100"], ["corollae120", "E120"], ["corollae140", "E140"], ["corollae170", "E170"], ["corollae210", "E210"]],
+  },
+  nissan: {
+    sunny: [["sunnyb13", "B13"], ["sunnyb15", "B15"], ["sunny", "الجيل الحديث"], ["sunny2020", "N17 (2010-2026)"]]
+  },
+  chevrolet: {
+    optra: [["optra", "الجيل المسجل"], ["nubira", "نوبيرا"], ["espero", "إسبيرو"]]
+  },
+  opel: {
+    astra: [["astra", "أسترا"], ["vectra", "فيكترا"], ["zafira", "زافيرا"]],
+    corsa: [["corsa", "كورسا"], ["meriva", "ميريفا"]]
+  },
+  fiat: {
+    tipo: [["tipo", "تيبو"], ["siena", "سيينا"]],
+    punto: [["punto", "بونتو"], ["palio", "باليو"]],
+    commercial: [["doblo", "دوبلو"]]
+  },
+  ford: {
+    focus: [["focus", "فوكاس"], ["escort", "إسكورت"], ["fiesta", "فييستا"]]
+  },
+  renault: {
+    megane: [["megane", "ميجان"], ["laguna", "لاجونا"], ["scenic", "سينيك"]]
+  },
+  volkswagen: {
+    jetta: [["jetta", "جيتا"], ["vento", "فينتو"]],
+    golf: [["golf7", "جولف 7"], ["golf8", "جولف 8"], ["beetle", "بيتل"]]
+  },
+  mercedes: {
+    aclass: [["aclass", "الفئة A"], ["bclass", "الفئة B"]]
+  },
+  bmw: {
+    serie3: [["serie3", "الفئة الثالثة"], ["serie1", "الفئة الأولى"]]
+  },
+  audi: {
+    a3: [["a3", "A3"], ["tt", "TT"]]
+  },
+  skoda: {
+    octavia: [["octavia", "أوكتافيا"], ["rapid", "رابيد"]]
+  }
+};
+
+Object.entries(EXTRA_MODEL_GROUPS).forEach(([makeKey, groups]) => {
+  MODEL_GROUPS[makeKey] = MODEL_GROUPS[makeKey] || {};
+  Object.entries(groups).forEach(([groupKey, variants]) => {
+    MODEL_GROUPS[makeKey][groupKey] = {
+      name: CAR_DATA[makeKey].models[variants[0][0]]?.name || groupKey,
+      variants: variants
+        .filter(([modelKey]) => CAR_DATA[makeKey].models[modelKey])
+        .map(([value, label]) => ({ value, label }))
+    };
+  });
+});
 
 // كل الماركات تمر بنفس التسلسل حتى لو لم تتوفر لها أجيال متعددة في قاعدة
 // البيانات. لا نسمّي الجيل من عندنا؛ نعرضه كـ "الفئة المتاحة" إلى أن تضاف

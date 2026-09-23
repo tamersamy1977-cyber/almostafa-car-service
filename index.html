@@ -2110,6 +2110,69 @@ CAR_DATA.hyundai.models.elantraad = {
 };
 delete CAR_DATA.hyundai.models.elantracn7;
 
+// موديلات إضافية شائعة، خصوصاً الأجيال القديمة المنتشرة في السوق المصري.
+// المواصفات مبدئية وإرشادية وتظل مراجعة كتيب السيارة هي المرجع النهائي.
+const EXTRA_MODELS = [
+  ["hyundai", "verna", "فيرنا", "2005-2017", "accentrb"],
+  ["hyundai", "excel", "إكسيل", "1992-1998", "elantrahd"],
+  ["kia", "pride", "برايد", "1999-2005", "picanto"],
+  ["kia", "sephia", "سيفيا", "1998-2003", "rio"],
+  ["kia", "cerato", "سيراتو", "2005-2020", "grandcerato"],
+  ["mitsubishi", "lancerevolution", "لانسر إيفولوشن", "2001-2015", "lancer"],
+  ["mitsubishi", "galant", "جالانت", "1999-2012", "lancer"],
+  ["mitsubishi", "spacewagon", "سبايس واجن", "1999-2007", "expander"],
+  ["toyota", "corollae100", "كورولا E100", "1992-1997", "corolla"],
+  ["toyota", "corollae120", "كورولا E120", "2002-2007", "corolla"],
+  ["toyota", "corollae140", "كورولا E140", "2008-2013", "corolla"],
+  ["toyota", "corollae170", "كورولا E170", "2014-2019", "corolla"],
+  ["nissan", "sunnyb13", "صني B13", "1992-1999", "sunny"],
+  ["nissan", "sunnyb15", "صني B15", "2000-2006", "sunny"],
+  ["nissan", "bluebird", "بلوبيرد", "1996-2001", "sentra"],
+  ["nissan", "micra", "ميكرا", "1993-2010", "tiida"],
+  ["chevrolet", "nubira", "نوبيرا", "1997-2008", "optra"],
+  ["chevrolet", "espero", "إسبيرو", "1995-1999", "optra"],
+  ["chevrolet", "tahoeold", "تاهو القديمة", "2000-2014", "tahoe"],
+  ["opel", "vectra", "فيكترا", "1996-2008", "astra"],
+  ["opel", "zafira", "زافيرا", "2000-2014", "astra"],
+  ["opel", "meriva", "ميريفا", "2003-2017", "corsa"],
+  ["fiat", "siena", "سيينا", "2001-2015", "tipo"],
+  ["fiat", "palio", "باليو", "1997-2018", "punto"],
+  ["fiat", "doblo", "دوبلو", "2001-2020", "tipo"],
+  ["lada", "2105", "لادا 2105", "1980-2010", "2107"],
+  ["lada", "kalina", "كالينا", "2004-2018", "granta"],
+  ["ford", "escort", "إسكورت", "1993-2004", "focus"],
+  ["ford", "fiesta", "فييستا", "1996-2020", "focus"],
+  ["renault", "laguna", "لاجونا", "1994-2015", "megane"],
+  ["renault", "scenic", "سينيك", "1996-2016", "megane"],
+  ["honda", "city", "سيتي", "2003-2020", "civic"],
+  ["suzuki", "apv", "APV", "2004-2018", "ertiga"],
+  ["volkswagen", "vento", "فينتو", "1992-1998", "jetta"],
+  ["volkswagen", "beetle", "بيتل", "1998-2019", "golf7"],
+  ["bmw", "serie1", "الفئة الأولى", "2004-2020", "serie3"],
+  ["audi", "tt", "TT", "1998-2020", "a3"],
+  ["mercedes", "bclass", "الفئة B", "2005-2020", "aclass"],
+  ["skoda", "rapid", "رابيد", "2013-2020", "octavia"]
+];
+
+function yearsFromRange(range) {
+  const [from, to] = range.split("-").map(Number);
+  return Array.from({ length: to - from + 1 }, (_, index) => String(from + index));
+}
+
+EXTRA_MODELS.forEach(([makeKey, modelKey, name, years, sourceKey]) => {
+  const source = CAR_DATA[makeKey]?.models[sourceKey];
+  if (!source || CAR_DATA[makeKey].models[modelKey]) return;
+  CAR_DATA[makeKey].models[modelKey] = {
+    ...source,
+    name,
+    years: yearsFromRange(years),
+    fluids: Object.fromEntries(Object.entries(source.fluids).map(([key, fluid]) => [
+      key,
+      { ...fluid, note: `${fluid.note} المواصفة إرشادية لهذا الجيل؛ راجع كتيب السيارة.` }
+    ]))
+  };
+});
+
 // تجميع الموديلات في عائلات وأجيال. يمكن إضافة أي عائلة جديدة هنا بدون
 // تغيير قاعدة بيانات السوائل نفسها؛ كل variant يشير إلى موديل موجود بالأسفل.
 const MODEL_GROUPS = {
@@ -2131,6 +2194,61 @@ const MODEL_GROUPS = {
     }
   }
 };
+
+const EXTRA_MODEL_GROUPS = {
+  toyota: {
+    corolla: [["corolla", "الجيل المسجل"], ["corollae100", "E100"], ["corollae120", "E120"], ["corollae140", "E140"], ["corollae170", "E170"]]
+  },
+  nissan: {
+    sunny: [["sunnyb13", "B13"], ["sunnyb15", "B15"], ["sunny", "الجيل الحديث"]]
+  },
+  chevrolet: {
+    optra: [["optra", "الجيل المسجل"], ["nubira", "نوبيرا"], ["espero", "إسبيرو"]]
+  },
+  opel: {
+    astra: [["astra", "أسترا"], ["vectra", "فيكترا"], ["zafira", "زافيرا"]],
+    corsa: [["corsa", "كورسا"], ["meriva", "ميريفا"]]
+  },
+  fiat: {
+    tipo: [["tipo", "تيبو"], ["siena", "سيينا"]],
+    punto: [["punto", "بونتو"], ["palio", "باليو"]],
+    commercial: [["doblo", "دوبلو"]]
+  },
+  ford: {
+    focus: [["focus", "فوكاس"], ["escort", "إسكورت"], ["fiesta", "فييستا"]]
+  },
+  renault: {
+    megane: [["megane", "ميجان"], ["laguna", "لاجونا"], ["scenic", "سينيك"]]
+  },
+  volkswagen: {
+    jetta: [["jetta", "جيتا"], ["vento", "فينتو"]],
+    golf: [["golf7", "جولف 7"], ["golf8", "جولف 8"], ["beetle", "بيتل"]]
+  },
+  mercedes: {
+    aclass: [["aclass", "الفئة A"], ["bclass", "الفئة B"]]
+  },
+  bmw: {
+    serie3: [["serie3", "الفئة الثالثة"], ["serie1", "الفئة الأولى"]]
+  },
+  audi: {
+    a3: [["a3", "A3"], ["tt", "TT"]]
+  },
+  skoda: {
+    octavia: [["octavia", "أوكتافيا"], ["rapid", "رابيد"]]
+  }
+};
+
+Object.entries(EXTRA_MODEL_GROUPS).forEach(([makeKey, groups]) => {
+  MODEL_GROUPS[makeKey] = MODEL_GROUPS[makeKey] || {};
+  Object.entries(groups).forEach(([groupKey, variants]) => {
+    MODEL_GROUPS[makeKey][groupKey] = {
+      name: CAR_DATA[makeKey].models[variants[0][0]]?.name || groupKey,
+      variants: variants
+        .filter(([modelKey]) => CAR_DATA[makeKey].models[modelKey])
+        .map(([value, label]) => ({ value, label }))
+    };
+  });
+});
 
 // كل الماركات تمر بنفس التسلسل حتى لو لم تتوفر لها أجيال متعددة في قاعدة
 // البيانات. لا نسمّي الجيل من عندنا؛ نعرضه كـ "الفئة المتاحة" إلى أن تضاف

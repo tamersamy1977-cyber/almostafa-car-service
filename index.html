@@ -572,6 +572,27 @@
   .notification-button:disabled { opacity: .65; cursor: not-allowed; }
   .notification-status { font-size: 12px; font-weight: 700; margin-top: 10px; }
 
+  .reminders-group-title {
+    color: var(--navy); font-size: 15px; font-weight: 800;
+    margin: 22px 0 6px; letter-spacing: -0.2px;
+  }
+  .cm-section {
+    border: 2px solid rgba(16,185,129,0.28);
+    background: linear-gradient(135deg, rgba(16,185,129,0.07), rgba(255,255,255,0));
+  }
+  .cm-quick { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .cm-chip {
+    padding: 8px 12px; font-size: 12px; font-weight: 700;
+    background: #EFF6FF; color: var(--navy);
+    border: 1px solid #DBEAFE; border-radius: 999px;
+    cursor: pointer; font-family: inherit; transition: all 0.2s ease;
+  }
+  .cm-chip:active { background: var(--gold); color: white; }
+  .cm-form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .cm-form-row .reminder-input, .cm-form-row .form-select { flex: 1 1 150px; }
+  .cm-card { border-right: 4px solid #10B981; }
+  .cm-empty { text-align: center; padding: 18px 14px; color: var(--text-muted); font-size: 13px; font-weight: 500; }
+
   @supports (padding-bottom: env(safe-area-inset-bottom)) {
     .bottom-nav { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
     body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
@@ -652,10 +673,8 @@
       <button id="enableNotificationsBtn" class="notification-button" onclick="requestNotificationPermission()">تفعيل الإشعارات</button>
       <div id="notificationStatus" class="notification-status" aria-live="polite"></div>
     </div>
-    <div class="empty-state" style="margin-top: 20px;">
-      <div class="emoji">⏰</div>
-      <p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل عداد الكيلومترات عند آخر تغيير لكل سائل عشان يحسب الموقع موعد التغيير القادم.</p>
-    </div>
+    <div id="fluidRemindersContainer"></div>
+    <div id="customMaintenanceContainer"></div>
     <div id="maintenanceLogContainer"></div>
   </div>
 </div>
@@ -2656,6 +2675,8 @@ const alertsContainer = document.getElementById('alertsContainer');
 const maintenanceTipsContainer = document.getElementById('maintenanceTipsContainer');
 const clientPlanContainer = document.getElementById('clientPlanContainer');
 const maintenanceLogContainer = document.getElementById('maintenanceLogContainer');
+const fluidRemindersContainer = document.getElementById('fluidRemindersContainer');
+const customMaintenanceContainer = document.getElementById('customMaintenanceContainer');
 const homeMaintenanceTipsContainer = document.getElementById('homeMaintenanceTipsContainer');
 const carBadge = document.getElementById('carBadge');
 
@@ -2692,6 +2713,7 @@ function init() {
   });
   renderReminders();
   renderMaintenanceLog();
+  renderCustomMaintenance();
 }
 
 function getSelectedModel() {
@@ -2757,7 +2779,7 @@ function switchTab(tab) {
   inputSection.classList.toggle('active', tab === 'home');
   resultsSection.classList.toggle('active', tab === 'results' && !!resultsSection.querySelector('.car-badge'));
   remindersSection.classList.toggle('active', tab === 'reminders');
-  if (tab === 'reminders') { renderReminders(); renderMaintenanceLog(); }
+  if (tab === 'reminders') { renderReminders(); renderMaintenanceLog(); renderCustomMaintenance(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -2814,11 +2836,10 @@ function reminderState(item) {
   return ['ok', 'لم يحدد الموعد بعد'];
 }
 function renderReminders() {
-  if (!remindersSection) return;
+  if (!fluidRemindersContainer) return;
   const reminders = readReminders();
-  const settings = `<div class="notification-settings"><h3>🔔 إشعارات مواعيد التغيير</h3><p>فعّل إشعارات المتصفح ليذكّرك الموقع عند حلول الموعد. يجب إبقاء الموقع مفتوحًا في المتصفح.</p><button id="enableNotificationsBtn" class="notification-button" onclick="requestNotificationPermission()">تفعيل الإشعارات</button><div id="notificationStatus" class="notification-status" aria-live="polite"></div></div>`;
-  if (!reminders.length) { remindersSection.innerHTML = settings + '<div class="empty-state" style="margin-top:20px"><div class="emoji">⏰</div><p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل عداد الكيلومترات عند آخر تغيير لكل سائل عشان يحسب الموقع لك موعد التغيير القادم.</p></div>'; updateNotificationUI(); return; }
-  remindersSection.innerHTML = settings + reminders.map((item, index) => {
+  if (!reminders.length) { fluidRemindersContainer.innerHTML = '<div class="empty-state" style="margin-top:20px"><div class="emoji">⏰</div><p>لا توجد تذكيرات للسوائل حالياً.<br>ابحث عن سوائل عربيتك، وسجّل عداد الكيلومترات عند آخر تغيير لكل سائل عشان يحسب الموقع لك موعد التغيير القادم.</p></div>'; updateNotificationUI(); return; }
+  fluidRemindersContainer.innerHTML = '<div class="reminders-group-title">🛢️ سوائل السيارة</div>' + reminders.map((item, index) => {
     const [state, label, percent, isKm] = reminderState(item);
     const r = refKmState(item);
     const nextKm = r ? (r.last + r.interval) : null;
@@ -2835,6 +2856,105 @@ function renderReminders() {
     return `<div class="reminder-card" style="animation-delay:${index * 70}ms"><div class="reminder-card-header"><div><div class="reminder-card-title">${item.fluidName} · ${item.makeName} ${item.modelName}</div><div class="reminder-card-subtitle">${subtitle}</div></div><button class="reminder-delete-btn" onclick="deleteReminder(${index})">حذف</button></div>${bar}<div class="reminder-status ${state}">${label}</div></div>`;
   }).join('');
   updateNotificationUI();
+}
+
+// ============================================================
+// صيانة عامة مخصصة (أي عنصر + فترة يحددها المستخدم)
+// ============================================================
+function readCustomMaintenance() {
+  try { return JSON.parse(localStorage.getItem('customMaintenance') || '[]'); } catch (_) { return []; }
+}
+function writeCustomMaintenance(items) { localStorage.setItem('customMaintenance', JSON.stringify(items)); }
+function cmSetMode(mode) {
+  const lastEl = document.getElementById('cmLast');
+  const intEl = document.getElementById('cmInterval');
+  if (!lastEl || !intEl) return;
+  if (mode === 'date') {
+    lastEl.type = 'date';
+    lastEl.placeholder = 'تاريخ آخر صيانة';
+    intEl.placeholder = 'الفاصل: كل كم شهر';
+  } else {
+    lastEl.type = 'number';
+    lastEl.placeholder = 'العداد عند آخر صيانة';
+    intEl.placeholder = 'الفاصل بالكيلومتر';
+  }
+}
+function cmPreset(name) { const el = document.getElementById('cmName'); if (el) el.value = name; }
+function saveCustomMaintenance() {
+  const name = (document.getElementById('cmName')?.value || '').trim();
+  const mode = document.getElementById('cmMode')?.value || 'km';
+  const intervalEl = document.getElementById('cmInterval');
+  const lastEl = document.getElementById('cmLast');
+  const interval = Number.parseInt((intervalEl?.value || '').replace(/[^\d]/g, ''), 10);
+  if (!name) { alert('اكتب اسم عنصر الصيانة أولاً.'); return; }
+  if (isNaN(interval) || interval <= 0) { alert('اكتب الفاصل الزمني (بالكيلومتر أو بالشهور).'); return; }
+  const item = { id: Date.now() + '' + Math.floor(Math.random() * 1000), name, mode, createdAt: new Date().toISOString().slice(0, 10), intervalKm: null, intervalMonths: null, km: null, currentKm: null, date: null };
+  if (mode === 'km') {
+    const last = Number.parseInt((lastEl?.value || '').replace(/[^\d]/g, ''), 10);
+    if (isNaN(last)) { alert('اكتب عداد الكيلومترات عند آخر صيانة.'); return; }
+    const currentKm = Number.parseInt((document.getElementById('kmInput')?.value || '').replace(/[^\d]/g, ''), 10);
+    item.intervalKm = interval;
+    item.km = last;
+    item.currentKm = Number.isNaN(currentKm) ? null : currentKm;
+  } else {
+    const date = lastEl?.value || '';
+    if (!date) { alert('اكتب تاريخ آخر صيانة.'); return; }
+    item.intervalMonths = interval;
+    item.date = date;
+  }
+  const items = readCustomMaintenance();
+  items.push(item);
+  writeCustomMaintenance(items);
+  if (intervalEl) intervalEl.value = '';
+  if (lastEl) lastEl.value = '';
+  renderCustomMaintenance();
+}
+function deleteCustomMaintenance(index) {
+  const items = readCustomMaintenance();
+  items.splice(index, 1);
+  writeCustomMaintenance(items);
+  renderCustomMaintenance();
+}
+function customReminderState(item) {
+  if (item.mode === 'km' && item.intervalKm && item.km != null) {
+    const interval = item.intervalKm;
+    const last = item.km;
+    const live = Number.parseInt((document.getElementById('kmInput')?.value || '').replace(/[^\d]/g, ''), 10);
+    let current = Number.isNaN(live) ? (item.currentKm != null ? item.currentKm : last) : live;
+    if (current < last) current = last;
+    const used = current - last;
+    const remaining = interval - used;
+    const percent = Math.max(0, Math.min(100, Math.round((used / interval) * 100)));
+    const state = remaining < 0 ? 'overdue' : remaining <= 2000 ? 'soon' : 'ok';
+    const label = remaining < 0 ? `متأخر بـ ${fmtKm(Math.abs(remaining))} كم` : remaining <= 2000 ? `متبقي ${fmtKm(remaining)} كم فقط` : `متبقي ${fmtKm(remaining)} كم`;
+    return { state, label, percent, isKm: true, nextKm: last + interval };
+  }
+  if (item.mode === 'date' && item.date && item.intervalMonths) {
+    const dueDate = addMonths(item.date, item.intervalMonths);
+    const days = Math.round((Date.parse(dueDate + 'T00:00:00') - Date.now()) / 86400000);
+    const state = days < 0 ? 'overdue' : days <= 30 ? 'soon' : 'ok';
+    const label = days < 0 ? 'متأخر' : days <= 30 ? `متبقي ${days} يوم` : `موعد الصيانة بعد ${days} يوم`;
+    return { state, label, percent: null, isKm: false, dueDate };
+  }
+  return null;
+}
+function renderCustomMaintenance() {
+  if (!customMaintenanceContainer) return;
+  const items = readCustomMaintenance();
+  const quick = ['تيل الفرامل', 'سير الكاتينة', 'فلتر الهواء', 'فلتر الكابين', 'فلتر البنزين', 'البوجيهات', 'البطارية', 'غاز التكييف'];
+  const form = `<section class="client-tools cm-section"><h3>🛠️ صيانة عامة مخصصة</h3><p>أي عنصر خارج السوائل (تيل، سير، فلاتر، بطارية...) — حدّد الفترة وموعد آخر صيانة ليتذكر الموقع لك الموعد القادم. محفوظة على جهازك فقط.</p><div class="cm-quick">${quick.map(q => `<button class="tool-button cm-chip" onclick="cmPreset('${q}')">${q}</button>`).join('')}</div><div class="cm-form-row"><input class="reminder-input" id="cmName" type="text" placeholder="اسم العنصر (مثال: تيل الفرامل)"><select class="form-select" id="cmMode" onchange="cmSetMode(this.value)"><option value="km">بالكيلومتر</option><option value="date">بالتاريخ</option></select></div><div class="cm-form-row"><input class="reminder-input" id="cmInterval" type="number" placeholder="الفاصل بالكيلومتر" min="1"><input class="reminder-input" id="cmLast" type="number" placeholder="العداد عند آخر صيانة" min="0"></div><div class="tool-actions"><button class="tool-button" onclick="saveCustomMaintenance()">💾 حفظ التذكير</button></div></section>`;
+  const cards = items.length ? '<div class="reminders-group-title">🔧 تذكيرات الصيانة المخصصة</div>' + items.map((item, index) => {
+    const st = customReminderState(item);
+    let subtitle = item.mode === 'km' ? `كل ${fmtKm(item.intervalKm)} كم` : `كل ${item.intervalMonths} شهر`;
+    if (item.mode === 'km' && item.km != null) subtitle = `آخر صيانة عند ${fmtKm(item.km)} كم · ` + subtitle;
+    if (item.mode === 'date' && item.date) subtitle = `آخر صيانة: ${formatDate(item.date)} · ` + subtitle;
+    if (st && st.isKm && st.nextKm != null) subtitle += ` — القادم عند ${fmtKm(st.nextKm)} كم`;
+    if (st && !st.isKm && st.dueDate) subtitle += ` — القادم بتاريخ ${formatDate(st.dueDate)}`;
+    const bar = st && st.isKm ? `<div class="progress-bar"><div class="progress-fill" style="width:${st.percent}%;background:${st.state === 'overdue' ? '#EF4444' : st.state === 'soon' ? '#FFB800' : '#10B981'}"></div></div>` : '';
+    const status = st ? `<div class="reminder-status ${st.state}">${st.label}</div>` : '<div class="reminder-status ok">أكمل الإعداد لبدء الحساب</div>';
+    return `<div class="reminder-card cm-card" style="animation-delay:${index * 70}ms"><div class="reminder-card-header"><div><div class="reminder-card-title">${item.name}</div><div class="reminder-card-subtitle">${subtitle}</div></div><button class="reminder-delete-btn" onclick="deleteCustomMaintenance(${index})">حذف</button></div>${bar}${status}</div>`;
+  }).join('') : '<div class="cm-empty">لا توجد تذكيرات صيانة مخصصة حتى الآن.<br>استخدم الأزرار السريعة أعلاه أو اكتب اسم العنصر بنفسك.</div>';
+  customMaintenanceContainer.innerHTML = form + cards;
 }
 
 function updateNotificationUI() {
@@ -2863,6 +2983,25 @@ function checkDueNotifications() {
         new Notification('موعد صيانة السيارة', { body: `${item.fluidName} لـ ${item.makeName} ${item.modelName} جاهز للتغيير.`, tag: key });
         notified[key] = Date.now();
       }
+    }
+  });
+  localStorage.setItem('notifiedFluidReminders', JSON.stringify(notified));
+  readCustomMaintenance().forEach(item => {
+    const key = `custom-${item.id}`;
+    if (notified[key]) return;
+    let due = false;
+    if (item.mode === 'date' && item.date && item.intervalMonths) {
+      const dueDate = addMonths(item.date, item.intervalMonths);
+      if (dueDate && dueDate <= today) due = true;
+    } else if (item.mode === 'km' && item.intervalKm && item.km != null) {
+      const next = item.km + item.intervalKm;
+      const live = Number.parseInt((document.getElementById('kmInput')?.value || '').replace(/[^\d]/g, ''), 10);
+      const cur = Number.isNaN(live) ? (item.currentKm != null ? item.currentKm : item.km) : live;
+      if (cur >= next) due = true;
+    }
+    if (due) {
+      new Notification('موعد صيانة السيارة', { body: `${item.name} جاهز للصيانة.`, tag: key });
+      notified[key] = Date.now();
     }
   });
   localStorage.setItem('notifiedFluidReminders', JSON.stringify(notified));

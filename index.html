@@ -2520,7 +2520,7 @@ function getMaintenanceTipsMarkup() {
 
 function updateMaintenanceTipsVisibility() {
   const currentKm = Number.parseInt((kmInput.value || '').replace(/[^\d]/g, ''), 10);
-  const markup = currentKm > 50000 ? getMaintenanceTipsMarkup() : '';
+  const markup = currentKm >= 50000 ? getMaintenanceTipsMarkup() : '';
   if (homeMaintenanceTipsContainer) homeMaintenanceTipsContainer.innerHTML = markup;
   if (maintenanceTipsContainer) maintenanceTipsContainer.innerHTML = markup;
 }

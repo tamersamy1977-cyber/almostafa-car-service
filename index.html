@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#041428">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="المصطفى">
 <title>مركز المصطفى لصيانة السيارات</title>
 <style>
   :root {
@@ -593,6 +597,32 @@
   .cm-card { border-right: 4px solid #10B981; }
   .cm-empty { text-align: center; padding: 18px 14px; color: var(--text-muted); font-size: 13px; font-weight: 500; }
 
+  .call-modal { max-height: min(84vh, 680px); overflow-y: auto; scrollbar-width: thin; }
+  .contact-section-title {
+    font-size: 13px; font-weight: 800; color: var(--navy);
+    margin: 22px 0 10px; display: flex; align-items: center; gap: 7px;
+  }
+  .contact-section-title::before { content: ""; width: 4px; height: 16px; background: var(--gold); border-radius: 2px; }
+  .contact-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .contact-row .form-input, .contact-row .form-select { flex: 1 1 120px; width: auto; }
+  .install-note {
+    display: none; font-size: 12px; color: var(--text-muted);
+    background: #FFF7E0; border: 1px solid #FFE9AE;
+    padding: 10px 12px; border-radius: 12px; margin-top: 10px; line-height: 1.7;
+  }
+  .saved-car-card {
+    background: linear-gradient(135deg, #FFF7E0, #FFFFFF);
+    border: 2px solid #FFE9AE; border-radius: 16px;
+    padding: 14px 16px; margin-bottom: 14px;
+    font-size: 13px; font-weight: 600; color: var(--text);
+  }
+  .saved-car-actions { display: flex; align-items: center; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+  .saved-clear {
+    background: none; border: none; color: var(--text-muted);
+    font-family: inherit; font-size: 12px; font-weight: 700;
+    cursor: pointer; padding: 4px; text-decoration: underline;
+  }
+
   @supports (padding-bottom: env(safe-area-inset-bottom)) {
     .bottom-nav { padding-bottom: calc(14px + env(safe-area-inset-bottom)); }
     body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
@@ -646,6 +676,7 @@
         <label class="form-label">📍 عدد الكيلومترات الحالية</label>
         <input type="number" id="kmInput" class="form-input" placeholder="مثال: 45000" min="0" max="999999">
       </div>
+      <div id="savedCarBanner"></div>
       <div id="homeMaintenanceTipsContainer"></div>
       <button class="btn-primary" onclick="searchFluids()"><span>🔍 اعرف السوائل المناسبة</span></button>
     </div>
@@ -708,6 +739,32 @@
         <div class="number" dir="ltr">011 1333 5291</div>
       </div>
     </a>
+
+    <div class="contact-section-title">💬 تواصل واتساب</div>
+    <button class="tool-button whatsapp" onclick="sendInquiryWhatsApp()">إرسال استفسار واتساب</button>
+
+    <div class="contact-section-title">📅 حجز موعد صيانة</div>
+    <div class="contact-row">
+      <input type="date" id="bookingDate" class="form-input" aria-label="تاريخ الموعد">
+      <select id="bookingTime" class="form-select" aria-label="وقت الموعد"></select>
+    </div>
+    <button class="tool-button whatsapp" onclick="confirmBooking()">✔ تأكيد الحجز عبر واتساب</button>
+
+    <div class="contact-section-title">📲 طلب معاودة اتصال</div>
+    <div class="contact-row">
+      <input type="tel" id="callbackPhone" class="form-input" placeholder="رقم موبايلك (11 رقم)" inputmode="numeric">
+      <select id="callbackTime" class="form-select" aria-label="الوقت المناسب">
+        <option value="في أي وقت">في أي وقت</option>
+        <option value="صباحًا (9-12)">صباحًا (9-12)</option>
+        <option value="الظهر (12-4)">الظهر (12-4)</option>
+        <option value="مساءً (4-8)">مساءً (4-8)</option>
+      </select>
+    </div>
+    <button class="tool-button whatsapp" onclick="requestCallback()">اطلب معاودة الاتصال</button>
+
+    <div class="contact-section-title">🏠 الموقع كتطبيق</div>
+    <button class="tool-button" id="installAppBtn" onclick="promptInstallApp()">أضف الموقع للشاشة الرئيسية</button>
+    <div id="installNote" class="install-note"></div>
 
     <button class="call-modal-close" onclick="closeCallModal()">إلغاء</button>
   </div>
@@ -2679,6 +2736,7 @@ const fluidRemindersContainer = document.getElementById('fluidRemindersContainer
 const customMaintenanceContainer = document.getElementById('customMaintenanceContainer');
 const homeMaintenanceTipsContainer = document.getElementById('homeMaintenanceTipsContainer');
 const carBadge = document.getElementById('carBadge');
+const savedCarBanner = document.getElementById('savedCarBanner');
 
 function fillSelect(select, items, placeholder) {
   select.innerHTML = `<option value="">${placeholder}</option>`;
@@ -2706,15 +2764,175 @@ function init() {
     fillSelect(yearSelect, [], 'اختر السنة');
   });
   kmInput.addEventListener('input', updateMaintenanceTipsVisibility);
+  kmInput.addEventListener('change', saveSelection);
   variantSelect.addEventListener('change', () => {
     const model = CAR_DATA[makeSelect.value]?.models[variantSelect.value];
     updatePowertrainSelects();
     fillSelect(yearSelect, model ? model.years.map(year => ({ value: year, label: year })) : [], 'اختر السنة');
   });
+  injectManifest();
+  fillBookingTime();
+  const bookingDateEl = document.getElementById('bookingDate');
+  if (bookingDateEl) { bookingDateEl.min = todayPlusDays(0); bookingDateEl.value = todayPlusDays(1); }
+  applySavedSelection();
+  renderSavedBanner();
   renderReminders();
   renderMaintenanceLog();
   renderCustomMaintenance();
 }
+
+// ============================================================
+// حفظ آخر سيارة تلقائيًا
+// ============================================================
+const REMEMBER_KEY = 'lastCarSelection';
+function saveSelection() {
+  if (!makeSelect.value || !variantSelect.value || !yearSelect.value) return;
+  const km = Number.parseInt((kmInput.value || '').replace(/[^\d]/g, ''), 10);
+  localStorage.setItem(REMEMBER_KEY, JSON.stringify({
+    make: makeSelect.value, model: modelSelect.value, variant: variantSelect.value,
+    engine: engineSelect.value || '', transmission: transmissionSelect.value || '',
+    year: yearSelect.value, km: Number.isNaN(km) ? '' : km,
+    label: `${CAR_DATA[makeSelect.value].name} ${getSelectedModelLabel()}`
+  }));
+}
+function applySavedSelection() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(REMEMBER_KEY) || 'null'); } catch (_) { saved = null; }
+  if (!saved) return;
+  const setIfOption = (select, val) => {
+    if (val && [...select.options].some(o => o.value === String(val))) select.value = String(val);
+  };
+  setIfOption(makeSelect, saved.make);
+  if (makeSelect.value) makeSelect.dispatchEvent(new Event('change'));
+  setIfOption(modelSelect, saved.model);
+  if (modelSelect.value) modelSelect.dispatchEvent(new Event('change'));
+  setIfOption(variantSelect, saved.variant);
+  if (variantSelect.value) variantSelect.dispatchEvent(new Event('change'));
+  setIfOption(engineSelect, saved.engine);
+  setIfOption(transmissionSelect, saved.transmission);
+  if (saved.km) kmInput.value = saved.km;
+}
+function renderSavedBanner() {
+  if (!savedCarBanner) return;
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(REMEMBER_KEY) || 'null'); } catch (_) { saved = null; }
+  savedCarBanner.innerHTML = saved
+    ? `<div class="saved-car-card"><div>👋 أهلن بيك! آخر عربية بحثت عنها: <strong>${saved.label || saved.make}</strong>${saved.km ? ` · العداد <strong>${fmtKm(saved.km)} كم</strong>` : ''}.</div><div class="saved-car-actions"><button class="tool-button" onclick="searchFluids()">🔍 اعرض المواصفات</button><button class="saved-clear" onclick="clearSavedSelection()">إزالة</button></div></div>`
+    : '';
+}
+function clearSavedSelection() {
+  localStorage.removeItem(REMEMBER_KEY);
+  renderSavedBanner();
+  kmInput.value = '';
+  updateMaintenanceTipsVisibility();
+}
+
+// ============================================================
+// تواصل: واتساب · حجز موعد · معاودة اتصال
+// ============================================================
+const WA_NUMBER = '201060716073';
+function openWhatsApp(text) {
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+}
+function getContactCarLine() {
+  if (makeSelect.value && variantSelect.value && yearSelect.value) {
+    return `${CAR_DATA[makeSelect.value].name} ${getSelectedModelLabel()} · موديل ${yearSelect.value} · العداد ${kmInput.value || '—'} كم`;
+  }
+  return 'لم يتم اختيار السيارة بعد';
+}
+function sendInquiryWhatsApp() {
+  openWhatsApp(`السلام عليكم مركز المصطفى 👋\nمحتاج استشارة صيانة لسيارتي: ${getContactCarLine()}\nممكن المساعدة؟`);
+}
+function fillBookingTime() {
+  const sel = document.getElementById('bookingTime');
+  if (!sel || sel.options.length) return;
+  const slots = [
+    ['09:00', '09:00 صباحًا'], ['10:00', '10:00 صباحًا'], ['11:00', '11:00 صباحًا'],
+    ['12:00', '12:00 ظهرًا'], ['13:00', '01:00 مساءً'], ['14:00', '02:00 مساءً'],
+    ['15:00', '03:00 مساءً'], ['16:00', '04:00 مساءً'], ['17:00', '05:00 مساءً'], ['18:00', '06:00 مساءً']
+  ];
+  sel.innerHTML = slots.map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+}
+function todayPlusDays(n) {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function readBookings() {
+  try { return JSON.parse(localStorage.getItem('siteBookings') || '[]'); } catch (_) { return []; }
+}
+function readCallbacks() {
+  try { return JSON.parse(localStorage.getItem('siteCallbacks') || '[]'); } catch (_) { return []; }
+}
+function confirmBooking() {
+  const date = document.getElementById('bookingDate')?.value;
+  const time = document.getElementById('bookingTime')?.value;
+  if (!date || !time) { alert('اختر تاريخ ووقت الحجز أولاً.'); return; }
+  const list = readBookings();
+  list.unshift({ date, time, car: getContactCarLine(), at: new Date().toISOString() });
+  localStorage.setItem('siteBookings', JSON.stringify(list));
+  openWhatsApp(`السلام عليكم مركز المصطفى 👋\nأريد حجز موعد لصيانة سيارتي: ${getContactCarLine()}\nالتاريخ: ${formatDate(date)}\nالوقت: ${time}\nأرجو تأكيد الحجز.`);
+  closeCallModal();
+}
+function requestCallback() {
+  const phone = (document.getElementById('callbackPhone')?.value || '').trim();
+  const time = document.getElementById('callbackTime')?.value || 'في أي وقت';
+  if (!/^01[0-9]{9}$/.test(phone)) { alert('اكتب رقم موبايل صحيح يبدأ بـ 01 ويتكون من 11 رقم.'); return; }
+  const list = readCallbacks();
+  list.unshift({ phone, time, car: getContactCarLine(), at: new Date().toISOString() });
+  localStorage.setItem('siteCallbacks', JSON.stringify(list));
+  openWhatsApp(`السلام عليكم مركز المصطفى 👋\nأرجو معاودة الاتصال بي لصيانة سيارتي: ${getContactCarLine()}\nرقم الهاتف: ${phone}\nالوقت المناسب: ${time}`);
+  closeCallModal();
+}
+
+// ============================================================
+// تثبيت الموقع كتطبيق على الشاشة الرئيسية (PWA)
+// ============================================================
+let deferredInstallPrompt = null;
+function injectManifest() {
+  const svg = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#041428"/><text x="96" y="132" font-size="100" text-anchor="middle">🛠️</text></svg>');
+  const manifest = {
+    name: 'مركز المصطفى لصيانة السيارات',
+    short_name: 'المصطفى',
+    start_url: '.',
+    scope: '.',
+    display: 'standalone',
+    background_color: '#041428',
+    theme_color: '#041428',
+    icons: [{ src: svg, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' }]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.appendChild(link);
+}
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+});
+function promptInstallApp() {
+  const btn = document.getElementById('installAppBtn');
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    return;
+  }
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const note = document.getElementById('installNote');
+  if (note) {
+    note.textContent = isIOS
+      ? 'على الآيفون: اضغط زر المشاركة (⬆️) من شريط المتصفح ثم اختر "إضافة إلى الشاشة الرئيسية".'
+      : 'على أندرويد / الكمبيوتر: افتح قائمة المتصفح (⋮) واختر "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".';
+    note.style.display = 'block';
+    if (btn) btn.textContent = 'ظهور التعليمات بالأسفل 👇';
+  }
+}
+window.addEventListener('appinstalled', () => {
+  const btn = document.getElementById('installAppBtn');
+  if (btn) btn.textContent = '✅ الموقع مثبت على شاشتك';
+  const note = document.getElementById('installNote');
+  if (note) note.textContent = 'المكان جاهز! افتحه من أيقونة الموقع على شاشتك الرئيسية.';
+});
 
 function getSelectedModel() {
   return CAR_DATA[makeSelect.value]?.models[variantSelect.value];
@@ -2736,6 +2954,7 @@ function searchFluids() {
     resultsSection.classList.add('active');
     renderResults(model);
     switchTab('results');
+    saveSelection();
   }, 250);
 }
 

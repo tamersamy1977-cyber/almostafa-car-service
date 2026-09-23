@@ -420,7 +420,7 @@
   /* ============ FLOATING CALL BUTTON ============ */
   .fab-call {
     position: fixed; bottom: 100px; left: 18px;
-    width: 60px; height: 60px; border-radius: 50%;
+    width: 78px; height: 68px; border-radius: 34px;
     background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
     color: white; border: none; font-size: 26px;
     cursor: pointer; z-index: 200;
@@ -428,6 +428,10 @@
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 8px 28px rgba(255, 184, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.4);
     animation: pulseGold 2.5s infinite;
+  }
+  .fab-call-label {
+    display: block; font-size: 10px; font-weight: 800;
+    line-height: 1.2; margin-top: 2px;
   }
   .fab-call:active { transform: scale(0.9) rotate(-10deg); }
   @keyframes pulseGold {
@@ -559,6 +563,10 @@
         <select id="modelSelect" class="form-select" disabled><option value="">اختر الموديل أولاً</option></select>
       </div>
       <div class="form-group">
+        <label class="form-label">🔖 الفئة / الجيل</label>
+        <select id="variantSelect" class="form-select" disabled><option value="">اختر الفئة أولاً</option></select>
+      </div>
+      <div class="form-group">
         <label class="form-label">📅 سنة الصنع</label>
         <select id="yearSelect" class="form-select" disabled><option value="">اختر السنة</option></select>
       </div>
@@ -603,7 +611,7 @@
   <button class="nav-item" onclick="switchTab('reminders')" id="navReminders"><span class="nav-icon">⏰</span><span>التذكيرات</span></button>
 </nav>
 
-<button class="fab-call" onclick="openCallModal()" aria-label="اتصل للاستشارة">📞</button>
+<button class="fab-call" onclick="openCallModal()" aria-label="اتصل لاستشارة مجانية">📞<span class="fab-call-label">استشارة مجانية</span></button>
 
 <div class="call-modal-overlay" id="callModal" onclick="closeCallModal(event)">
   <div class="call-modal" onclick="event.stopPropagation()">
@@ -614,7 +622,7 @@
     <a href="tel:01060716073" class="call-number-btn">
       <div class="call-number-icon">📱</div>
       <div class="call-number-info">
-        <div class="label">الخط الأول</div>
+        <div class="label">استشارة مجانية · الخط الأول</div>
         <div class="number">01060716073</div>
       </div>
     </a>
@@ -622,7 +630,7 @@
     <a href="tel:01113335291" class="call-number-btn">
       <div class="call-number-icon">📱</div>
       <div class="call-number-info">
-        <div class="label">الخط الثاني</div>
+        <div class="label">استشارة مجانية · الخط الثاني</div>
         <div class="number">01113335291</div>
       </div>
     </a>
@@ -2094,6 +2102,79 @@ const CAR_DATA = {
   }
 };
 
+// بعض الأجيال لها نفس المواصفات العامة المسجلة لموديل قريب منها.
+CAR_DATA.hyundai.models.elantraad = {
+  ...CAR_DATA.hyundai.models.elantracn7,
+  name: "إلنترا AD",
+  years: ["2016", "2017", "2018", "2019", "2020"]
+};
+delete CAR_DATA.hyundai.models.elantracn7;
+
+// تجميع الموديلات في عائلات وأجيال. يمكن إضافة أي عائلة جديدة هنا بدون
+// تغيير قاعدة بيانات السوائل نفسها؛ كل variant يشير إلى موديل موجود بالأسفل.
+const MODEL_GROUPS = {
+  hyundai: {
+    elantra: {
+      name: "إلنترا",
+      variants: [
+        { value: "elantrahd", label: "HD" },
+        { value: "elantramd", label: "MD" },
+        { value: "elantraad", label: "AD" }
+      ]
+    },
+    accent: {
+      name: "أكسنت",
+      variants: [
+        { value: "accentrb", label: "RB" },
+        { value: "accenthci", label: "HCI" }
+      ]
+    }
+  }
+};
+
+// كل الماركات تمر بنفس التسلسل حتى لو لم تتوفر لها أجيال متعددة في قاعدة
+// البيانات. لا نسمّي الجيل من عندنا؛ نعرضه كـ "الفئة المتاحة" إلى أن تضاف
+// مواصفات أجيال أخرى مؤكدة.
+Object.entries(CAR_DATA).forEach(([makeKey, car]) => {
+  MODEL_GROUPS[makeKey] = MODEL_GROUPS[makeKey] || {};
+  Object.entries(car.models).forEach(([modelKey, model]) => {
+    const alreadyGrouped = Object.values(MODEL_GROUPS[makeKey])
+      .some(group => group.variants.some(variant => variant.value === modelKey));
+    if (!alreadyGrouped) {
+      MODEL_GROUPS[makeKey][modelKey] = {
+        name: model.name,
+        variants: [{ value: modelKey, label: "الفئة المتاحة" }]
+      };
+    }
+  });
+});
+
+function getModelGroups(makeKey) {
+  const car = CAR_DATA[makeKey];
+  if (!car) return [];
+  const grouped = MODEL_GROUPS[makeKey] || {};
+  const groupedKeys = new Set(Object.values(grouped).flatMap(group => group.variants.map(variant => variant.value)));
+  const groups = Object.entries(grouped).map(([value, group]) => ({ value, label: group.name }));
+  Object.entries(car.models).forEach(([value, model]) => {
+    if (!groupedKeys.has(value)) groups.push({ value, label: model.name });
+  });
+  return groups;
+}
+
+function getModelVariants(makeKey, groupKey) {
+  const car = CAR_DATA[makeKey];
+  const group = MODEL_GROUPS[makeKey]?.[groupKey];
+  if (group) return group.variants;
+  const model = car?.models[groupKey];
+  return model ? [{ value: groupKey, label: model.name }] : [];
+}
+
+function getSelectedModelLabel() {
+  const group = MODEL_GROUPS[makeSelect.value]?.[modelSelect.value];
+  const variant = getModelVariants(makeSelect.value, modelSelect.value).find(item => item.value === variantSelect.value);
+  return group ? `${group.name} ${variant?.label || ""}`.trim() : variant?.label || "";
+}
+
 // ============================================================
 // تطبيع فترات زيت الفتيس حسب النوع
 // ============================================================
@@ -2125,6 +2206,7 @@ function extractKmInterval(interval) {
 
 const makeSelect = document.getElementById('makeSelect');
 const modelSelect = document.getElementById('modelSelect');
+const variantSelect = document.getElementById('variantSelect');
 const yearSelect = document.getElementById('yearSelect');
 const kmInput = document.getElementById('kmInput');
 const inputSection = document.getElementById('inputSection');
@@ -2150,25 +2232,30 @@ function fillSelect(select, items, placeholder) {
 function init() {
   fillSelect(makeSelect, Object.entries(CAR_DATA).map(([value, car]) => ({ value, label: car.name })), 'اختر الماركة');
   makeSelect.addEventListener('change', () => {
-    const car = CAR_DATA[makeSelect.value];
-    fillSelect(modelSelect, car ? Object.entries(car.models).map(([value, model]) => ({ value, label: model.name })) : [], 'اختر الموديل أولاً');
+    fillSelect(modelSelect, getModelGroups(makeSelect.value), 'اختر الموديل أولاً');
+    fillSelect(variantSelect, [], 'اختر الفئة أولاً');
     fillSelect(yearSelect, [], 'اختر السنة');
   });
   modelSelect.addEventListener('change', () => {
-    const model = CAR_DATA[makeSelect.value]?.models[modelSelect.value];
+    const variants = getModelVariants(makeSelect.value, modelSelect.value);
+    fillSelect(variantSelect, variants, 'اختر الفئة / الجيل');
+    fillSelect(yearSelect, [], 'اختر السنة');
+  });
+  variantSelect.addEventListener('change', () => {
+    const model = CAR_DATA[makeSelect.value]?.models[variantSelect.value];
     fillSelect(yearSelect, model ? model.years.map(year => ({ value: year, label: year })) : [], 'اختر السنة');
   });
   renderReminders();
 }
 
 function getSelectedModel() {
-  return CAR_DATA[makeSelect.value]?.models[modelSelect.value];
+  return CAR_DATA[makeSelect.value]?.models[variantSelect.value];
 }
 
 function searchFluids() {
   const model = getSelectedModel();
-  if (!makeSelect.value || !modelSelect.value || !yearSelect.value) {
-    alert('من فضلك اختر الماركة والموديل وسنة الصنع أولاً.');
+  if (!makeSelect.value || !modelSelect.value || !variantSelect.value || !yearSelect.value) {
+    alert('من فضلك اختر الماركة والموديل والفئة وسنة الصنع أولاً.');
     return;
   }
   loading.classList.add('active');
@@ -2183,7 +2270,7 @@ function searchFluids() {
 
 function renderResults(model) {
   const car = CAR_DATA[makeSelect.value];
-  carBadge.innerHTML = `<div class="car-badge"><div class="car-badge-icon">🚗</div><div class="car-badge-info"><h3>${car.name} ${model.name}</h3><p>موديل ${yearSelect.value} · ${model.engine}</p></div></div>`;
+  carBadge.innerHTML = `<div class="car-badge"><div class="car-badge-icon">🚗</div><div class="car-badge-info"><h3>${car.name} ${getSelectedModelLabel()}</h3><p>موديل ${yearSelect.value} · ${model.engine}</p></div></div>`;
   const fluids = Object.entries(model.fluids);
   tabsContainer.innerHTML = fluids.map(([key, fluid], i) => `<button class="tab-btn${i === 0 ? ' active' : ''}" data-fluid="${key}" onclick="showFluid('${key}')">${fluid.icon} ${fluid.name}</button>`).join('');
   fluidsContainer.innerHTML = fluids.map(([key, fluid], i) => `<article class="fluid-card" data-fluid-card="${key}" style="animation-delay:${i * 70}ms"><div class="fluid-header"><div class="fluid-icon ${fluid.cls}">${fluid.icon}</div><h3 class="fluid-title">${fluid.name}</h3></div><div class="fluid-spec"><span class="label">النوع</span><span class="value">${fluid.viscosity}</span></div><div class="fluid-spec"><span class="label">المواصفة</span><span class="value">${fluid.spec}</span></div><div class="fluid-spec"><span class="label">السعة</span><span class="value">${fluid.capacity}</span></div><div class="fluid-spec"><span class="label">التغيير</span><span class="value gold">${fluid.interval}</span></div><div class="fluid-note">${fluid.note}</div><div class="reminder-section"><div class="reminder-title">⏰ سجّل آخر تغيير</div><div class="reminder-input-row"><input class="reminder-input" type="number" id="km-${key}" placeholder="عداد الكيلومترات عند آخر تغيير" min="0" inputmode="numeric"><input class="reminder-input" type="date" id="date-${key}" aria-label="تاريخ آخر تغيير"><button class="reminder-save-btn" onclick="saveReminder('${key}')">حفظ</button></div><div class="reminder-meta">سجّل عداد الكيلومترات (‏أو التاريخ) لحساب موعد التغيير تلقائياً — الفاصل: ${fluid.interval}</div><div id="status-${key}"></div></div></article>`).join('');
@@ -2231,8 +2318,8 @@ function saveReminder(fluidKey) {
   const fluid = model?.fluids[fluidKey];
   if (!model || !fluid) return;
   const currentKm = parseInt(document.getElementById('kmInput').value.replace(/[^\d]/g, ''), 10);
-  const reminders = readReminders().filter(item => !(item.make === makeSelect.value && item.model === modelSelect.value && item.fluidKey === fluidKey));
-  reminders.push({ make: makeSelect.value, makeName: CAR_DATA[makeSelect.value].name, model: modelSelect.value, modelName: model.name, year: yearSelect.value, fluidKey, fluidName: fluid.name, interval: fluid.interval, kmInterval: extractKmInterval(fluid.interval), date, km: (km === null || isNaN(km)) ? null : km, currentKm: (currentKm === null || isNaN(currentKm)) ? null : currentKm });
+  const reminders = readReminders().filter(item => !(item.make === makeSelect.value && item.model === variantSelect.value && item.fluidKey === fluidKey));
+  reminders.push({ make: makeSelect.value, makeName: CAR_DATA[makeSelect.value].name, model: variantSelect.value, modelName: getSelectedModelLabel(), year: yearSelect.value, fluidKey, fluidName: fluid.name, interval: fluid.interval, kmInterval: extractKmInterval(fluid.interval), date, km: (km === null || isNaN(km)) ? null : km, currentKm: (currentKm === null || isNaN(currentKm)) ? null : currentKm });
   writeReminders(reminders);
   renderReminders();
   const status = document.getElementById(`status-${fluidKey}`);

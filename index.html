@@ -2517,6 +2517,27 @@ function extractKmInterval(interval) {
   const value = parseInt(matches[matches.length - 1][1].replace(/[^\d]/g, ''), 10);
   return isNaN(value) ? null : value;
 }
+function getDateIntervalMonths(fluidKey) {
+  if (fluidKey === 'engine') return 12;
+  if (fluidKey === 'transmission') return 36;
+  return null;
+}
+function addMonths(dateString, months) {
+  if (!dateString || !months) return null;
+  const date = new Date(`${dateString}T00:00:00`);
+  if (isNaN(date.getTime())) return null;
+  const originalDay = date.getDate();
+  date.setDate(1);
+  date.setMonth(date.getMonth() + months);
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  date.setDate(Math.min(originalDay, lastDay));
+  return date.toISOString().slice(0, 10);
+}
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(`${dateString}T00:00:00`);
+  return isNaN(date.getTime()) ? dateString : date.toLocaleDateString('ar-EG');
+}
 
 const makeSelect = document.getElementById('makeSelect');
 const modelSelect = document.getElementById('modelSelect');
@@ -2646,7 +2667,7 @@ function saveReminder(fluidKey) {
   if (!model || !fluid) return;
   const currentKm = parseInt(document.getElementById('kmInput').value.replace(/[^\d]/g, ''), 10);
   const reminders = readReminders().filter(item => !(item.make === makeSelect.value && item.model === variantSelect.value && item.fluidKey === fluidKey));
-  reminders.push({ make: makeSelect.value, makeName: CAR_DATA[makeSelect.value].name, model: variantSelect.value, modelName: getSelectedModelLabel(), year: yearSelect.value, fluidKey, fluidName: fluid.name, interval: fluid.interval, kmInterval: extractKmInterval(fluid.interval), date, km: (km === null || isNaN(km)) ? null : km, currentKm: (currentKm === null || isNaN(currentKm)) ? null : currentKm });
+  reminders.push({ make: makeSelect.value, makeName: CAR_DATA[makeSelect.value].name, model: variantSelect.value, modelName: getSelectedModelLabel(), year: yearSelect.value, fluidKey, fluidName: fluid.name, interval: fluid.interval, kmInterval: extractKmInterval(fluid.interval), date, dateIntervalMonths: getDateIntervalMonths(fluidKey), km: (km === null || isNaN(km)) ? null : km, currentKm: (currentKm === null || isNaN(currentKm)) ? null : currentKm });
   writeReminders(reminders);
   renderReminders();
   const status = document.getElementById(`status-${fluidKey}`);
@@ -2672,7 +2693,8 @@ function reminderState(item) {
     return ['ok', `متبقي ${fmtKm(remaining)} كم`, percent, true];
   }
   if (item.date) {
-    const days = Math.round((Date.parse(item.date + 'T00:00:00') - Date.now()) / 86400000);
+    const dueDate = item.dateIntervalMonths ? addMonths(item.date, item.dateIntervalMonths) : item.date;
+    const days = Math.round((Date.parse(dueDate + 'T00:00:00') - Date.now()) / 86400000);
     return days < 0 ? ['overdue', 'متأخر'] : days <= 30 ? ['soon', `متبقي ${days} يوم`] : ['ok', `موعد التغيير بعد ${days} يوم`];
   }
   return ['ok', 'لم يحدد الموعد بعد'];
@@ -2688,7 +2710,11 @@ function renderReminders() {
     const nextKm = r ? (r.last + r.interval) : null;
     let subtitle = item.interval;
     if (item.km != null) subtitle = `آخر تغيير عند ${fmtKm(item.km)} كم · ` + subtitle;
-    if (item.date) subtitle = `آخر تغيير: ${item.date} · ` + subtitle;
+    if (item.date) {
+      const dueDate = item.dateIntervalMonths ? addMonths(item.date, item.dateIntervalMonths) : item.date;
+      subtitle = `آخر تغيير: ${formatDate(item.date)} · ` + subtitle;
+      if (item.dateIntervalMonths) subtitle += ` — التغيير القادم بتاريخ ${formatDate(dueDate)}`;
+    }
     if (nextKm != null) subtitle += ` — التغيير القادم عند ${fmtKm(nextKm)} كم`;
     const bar = isKm ? `<div class="progress-bar"><div class="progress-fill" style="width:${percent}%;background:${state === 'overdue' ? '#EF4444' : state === 'soon' ? '#FFB800' : '#10B981'}"></div></div>` : '';
     return `<div class="reminder-card" style="animation-delay:${index * 70}ms"><div class="reminder-card-header"><div><div class="reminder-card-title">${item.fluidName} · ${item.makeName} ${item.modelName}</div><div class="reminder-card-subtitle">${subtitle}</div></div><button class="reminder-delete-btn" onclick="deleteReminder(${index})">حذف</button></div>${bar}<div class="reminder-status ${state}">${label}</div></div>`;

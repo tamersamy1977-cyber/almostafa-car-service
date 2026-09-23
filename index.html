@@ -467,6 +467,7 @@
     color: white; border: none; font-size: 26px;
     cursor: pointer; z-index: 200;
     display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 8px 28px rgba(255, 184, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.4);
     animation: pulseGold 2.5s infinite;
@@ -665,7 +666,7 @@
   <button class="nav-item" onclick="switchTab('reminders')" id="navReminders"><span class="nav-icon">⏰</span><span>التذكيرات</span></button>
 </nav>
 
-<button class="fab-call" onclick="openCallModal()" aria-label="اتصل لاستشارة مجانية">📞<span class="fab-call-label">استشارة مجانية</span></button>
+<a class="fab-call" href="tel:+201060716073" aria-label="اتصل لاستشارة مجانية">📞<span class="fab-call-label">استشارة مجانية</span></a>
 
 <div class="call-modal-overlay" id="callModal" onclick="closeCallModal(event)">
   <div class="call-modal" onclick="event.stopPropagation()">
@@ -673,7 +674,7 @@
     <h3 class="call-modal-title">📞 استشارة مجانية</h3>
     <p class="call-modal-subtitle">اتصل بنا للحصول على استشارة مجانية حول سوائل وصيانة سيارتك</p>
 
-    <a href="tel:01060716073" class="call-number-btn">
+    <a href="tel:+201060716073" class="call-number-btn">
       <div class="call-number-icon">📱</div>
       <div class="call-number-info">
         <div class="label">استشارة مجانية · الخط الأول</div>
@@ -681,7 +682,7 @@
       </div>
     </a>
 
-    <a href="tel:01113335291" class="call-number-btn">
+    <a href="tel:+201113335291" class="call-number-btn">
       <div class="call-number-icon">📱</div>
       <div class="call-number-info">
         <div class="label">استشارة مجانية · الخط الثاني</div>

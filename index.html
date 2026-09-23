@@ -666,7 +666,7 @@
   <button class="nav-item" onclick="switchTab('reminders')" id="navReminders"><span class="nav-icon">⏰</span><span>التذكيرات</span></button>
 </nav>
 
-<a class="fab-call" href="tel:+201060716073" aria-label="اتصل لاستشارة مجانية">📞<span class="fab-call-label">استشارة مجانية</span></a>
+<button class="fab-call" onclick="openCallModal()" aria-label="اتصل لاستشارة مجانية">📞<span class="fab-call-label">استشارة مجانية</span></button>
 
 <div class="call-modal-overlay" id="callModal" onclick="closeCallModal(event)">
   <div class="call-modal" onclick="event.stopPropagation()">

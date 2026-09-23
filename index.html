@@ -605,6 +605,7 @@
         <label class="form-label">📍 عدد الكيلومترات الحالية</label>
         <input type="number" id="kmInput" class="form-input" placeholder="مثال: 45000" min="0" max="999999">
       </div>
+      <div id="homeMaintenanceTipsContainer"></div>
       <button class="btn-primary" onclick="searchFluids()"><span>🔍 اعرف السوائل المناسبة</span></button>
     </div>
   </div>
@@ -2513,6 +2514,17 @@ function getSelectedModelLabel() {
   return group ? `${group.name} ${variant?.label || ""}`.trim() : variant?.label || "";
 }
 
+function getMaintenanceTipsMarkup() {
+  return `<section class="maintenance-tips"><h3>🛠️ نصائح إضافية للسيارات الأكثر من 50,000 كم</h3><ol><li>فحص السيور.</li><li>فحص البوجيهات.</li><li>عمل دورة تنظيف لزيت الموتور (Engine Flush) حسب حالة الزيت وتعليمات الشركة.</li><li>عمل دورة تنظيف كربون لدورة الاحتراق بالكامل، وتشمل البوابة وحساس الشكمان وعلبة البيئة والمانيفولد، بعد الفحص والتأكد من ملاءمتها.</li><li>تنظيف دورة البنزين باستخدام منظف مناسب في تانك السيارة.</li><li>فحص الفلاتر: فلتر الموتور وفلتر التكييف.</li><li>تنظيف جسم الموتور من الأتربة وآثار الزيوت بالطريقة الآمنة، مع تجنب وصول المياه إلى الكهرباء والحساسات.</li><li>فحص السيارة بجهاز كشف الأعطال ومراجعة أو إعادة تهيئة الحساسات عند الحاجة وفق مواصفات المصنع.</li></ol><p>هذه توصيات إرشادية وليست كلها تغييرات إلزامية. يحدد الفني ما يلزم بعد الفحص، مع الرجوع إلى كتيب السيارة وتعليمات الشركة.</p></section>`;
+}
+
+function updateMaintenanceTipsVisibility() {
+  const currentKm = Number.parseInt((kmInput.value || '').replace(/[^\d]/g, ''), 10);
+  const markup = currentKm > 50000 ? getMaintenanceTipsMarkup() : '';
+  if (homeMaintenanceTipsContainer) homeMaintenanceTipsContainer.innerHTML = markup;
+  if (maintenanceTipsContainer) maintenanceTipsContainer.innerHTML = markup;
+}
+
 // ============================================================
 // تطبيع فترات زيت الفتيس حسب النوع
 // ============================================================
@@ -2585,6 +2597,7 @@ const fluidsContainer = document.getElementById('fluidsContainer');
 const tabsContainer = document.getElementById('tabsContainer');
 const alertsContainer = document.getElementById('alertsContainer');
 const maintenanceTipsContainer = document.getElementById('maintenanceTipsContainer');
+const homeMaintenanceTipsContainer = document.getElementById('homeMaintenanceTipsContainer');
 const carBadge = document.getElementById('carBadge');
 
 function fillSelect(select, items, placeholder) {
@@ -2612,6 +2625,7 @@ function init() {
     updatePowertrainSelects();
     fillSelect(yearSelect, [], 'اختر السنة');
   });
+  kmInput.addEventListener('input', updateMaintenanceTipsVisibility);
   variantSelect.addEventListener('change', () => {
     const model = CAR_DATA[makeSelect.value]?.models[variantSelect.value];
     updatePowertrainSelects();
@@ -2661,8 +2675,7 @@ function renderResults(model) {
     return `<article class="fluid-card" data-fluid-card="${key}" style="animation-delay:${i * 70}ms"><div class="fluid-header"><div class="fluid-icon ${fluid.cls}">${fluid.icon}</div><h3 class="fluid-title">${fluid.name}${titleValidity}</h3></div><div class="fluid-spec"><span class="label">النوع</span><span class="value">${fluid.viscosity}</span></div><div class="fluid-spec"><span class="label">المواصفة</span><span class="value">${fluid.spec}</span></div><div class="fluid-spec"><span class="label">السعة</span><span class="value">${fluid.capacity}</span></div><div class="fluid-spec"><span class="label">التغيير</span><span class="value gold">${fluid.interval}</span></div>${validitySpec}<div class="fluid-note">${fluid.note}</div><div class="reminder-section"><div class="reminder-title">⏰ سجّل آخر تغيير</div><div class="reminder-input-row"><input class="reminder-input" type="number" id="km-${key}" placeholder="عداد الكيلومترات عند آخر تغيير" min="0" inputmode="numeric"><input class="reminder-input" type="date" id="date-${key}" aria-label="تاريخ آخر تغيير"><button class="reminder-save-btn" onclick="saveReminder('${key}')">حفظ</button></div><div class="reminder-meta">سجّل عداد الكيلومترات (‏أو التاريخ) لحساب موعد التغيير تلقائياً — الفاصل: ${fluid.interval}${dateValidity ? ` · الصلاحية الزمنية: ${dateValidity}` : ''}</div><div id="status-${key}"></div></div></article>`;
   }).join('');
   alertsContainer.innerHTML = `<div class="alert-box warning"><div class="alert-icon">⚠️</div><div class="alert-content"><h4>تنبيه مهم</h4><p>المواعيد إرشادية. راجع كتيب سيارتك واستعن بفني متخصص قبل تغيير أي سائل.</p></div></div>`;
-  const currentKm = parseInt(kmInput.value.replace(/[^\d]/g, ''), 10);
-  maintenanceTipsContainer.innerHTML = currentKm > 50000 ? `<section class="maintenance-tips"><h3>🛠️ نصائح إضافية لسيارتك — أكثر من 50,000 كم</h3><ol><li>فحص السيور.</li><li>فحص البوجيهات.</li><li>عمل دورة تنظيف لزيت الموتور (Engine Flush) حسب حالة الزيت وتعليمات الشركة.</li><li>عمل دورة تنظيف كربون لدورة الاحتراق بالكامل، وتشمل البوابة وحساس الشكمان وعلبة البيئة والمانيفولد، بعد الفحص والتأكد من ملاءمتها.</li><li>تنظيف دورة البنزين باستخدام منظف مناسب في تانك السيارة.</li><li>فحص الفلاتر: فلتر الموتور وفلتر التكييف.</li><li>تنظيف جسم الموتور من الأتربة وآثار الزيوت بالطريقة الآمنة، مع تجنب وصول المياه إلى الكهرباء والحساسات.</li><li>فحص السيارة بجهاز كشف الأعطال ومراجعة أو إعادة تهيئة الحساسات عند الحاجة وفق مواصفات المصنع.</li></ol><p>هذه توصيات فحص وصيانة إرشادية وليست كلها تغييرات إلزامية. يحدد الفني ما يلزم بعد الفحص، مع الرجوع إلى كتيب السيارة وتعليمات الشركة.</p></section>` : '';
+  updateMaintenanceTipsVisibility();
   showFluid(fluids[0]?.[0]);
 }
 

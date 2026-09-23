@@ -236,11 +236,9 @@
   .fluid-icon.brake { background: linear-gradient(135deg, rgba(255,184,0,0.18), rgba(255,184,0,0.06)); }
   .fluid-icon.transmission { background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); }
   .fluid-title { font-size: 17px; font-weight: 800; color: var(--navy); letter-spacing: -0.3px; }
-  .fluid-validity {
-    display: inline-flex; align-items: center; gap: 5px;
-    margin-right: auto; padding: 7px 10px; border-radius: 10px;
-    background: rgba(255,184,0,0.14); color: #7A5C00;
-    font-size: 11px; font-weight: 800; white-space: nowrap;
+  .fluid-title-validity {
+    display: block; margin-top: 4px; color: #9A6700;
+    font-size: 12px; font-weight: 800;
   }
   .fluid-spec {
     display: flex; align-items: center; gap: 10px;
@@ -2631,12 +2629,15 @@ function renderResults(model) {
   const source = OFFICIAL_MANUAL_PORTALS[makeSelect.value];
   carBadge.innerHTML = `<div class="car-badge"><div class="car-badge-icon">🚗</div><div class="car-badge-info"><h3>${car.name} ${getSelectedModelLabel()}</h3><p>موديل ${yearSelect.value} · ${engine}${transmission ? ` · ${transmission}` : ""}</p><p>المواصفات إرشادية حتى مراجعة كتيب نفس السيارة والمحرك.</p>${source ? `<a href="${source}" target="_blank" rel="noopener">📘 فتح بوابة الكتيب الرسمية</a>` : ""}</div></div>`;
   const fluids = Object.entries(model.fluids);
-  tabsContainer.innerHTML = fluids.map(([key, fluid], i) => `<button class="tab-btn${i === 0 ? ' active' : ''}" data-fluid="${key}" onclick="showFluid('${key}')">${fluid.icon} ${fluid.name}</button>`).join('');
+  tabsContainer.innerHTML = fluids.map(([key, fluid], i) => {
+    const validity = getFluidDateValidityLabel(key);
+    return `<button class="tab-btn${i === 0 ? ' active' : ''}" data-fluid="${key}" onclick="showFluid('${key}')">${fluid.icon} ${fluid.name}${validity ? ` · ${validity}` : ''}</button>`;
+  }).join('');
   fluidsContainer.innerHTML = fluids.map(([key, fluid], i) => {
     const dateValidity = getFluidDateValidityLabel(key);
     const validitySpec = dateValidity ? `<div class="fluid-spec"><span class="label">الصلاحية</span><span class="value gold">${dateValidity}</span></div>` : '';
-    const validityBadge = dateValidity ? `<span class="fluid-validity">⏳ ${dateValidity}</span>` : '';
-    return `<article class="fluid-card" data-fluid-card="${key}" style="animation-delay:${i * 70}ms"><div class="fluid-header"><div class="fluid-icon ${fluid.cls}">${fluid.icon}</div><h3 class="fluid-title">${fluid.name}</h3>${validityBadge}</div><div class="fluid-spec"><span class="label">النوع</span><span class="value">${fluid.viscosity}</span></div><div class="fluid-spec"><span class="label">المواصفة</span><span class="value">${fluid.spec}</span></div><div class="fluid-spec"><span class="label">السعة</span><span class="value">${fluid.capacity}</span></div><div class="fluid-spec"><span class="label">التغيير</span><span class="value gold">${fluid.interval}</span></div>${validitySpec}<div class="fluid-note">${fluid.note}</div><div class="reminder-section"><div class="reminder-title">⏰ سجّل آخر تغيير</div><div class="reminder-input-row"><input class="reminder-input" type="number" id="km-${key}" placeholder="عداد الكيلومترات عند آخر تغيير" min="0" inputmode="numeric"><input class="reminder-input" type="date" id="date-${key}" aria-label="تاريخ آخر تغيير"><button class="reminder-save-btn" onclick="saveReminder('${key}')">حفظ</button></div><div class="reminder-meta">سجّل عداد الكيلومترات (‏أو التاريخ) لحساب موعد التغيير تلقائياً — الفاصل: ${fluid.interval}${dateValidity ? ` · الصلاحية الزمنية: ${dateValidity}` : ''}</div><div id="status-${key}"></div></div></article>`;
+    const titleValidity = dateValidity ? `<span class="fluid-title-validity">⏳ الصلاحية: ${dateValidity}</span>` : '';
+    return `<article class="fluid-card" data-fluid-card="${key}" style="animation-delay:${i * 70}ms"><div class="fluid-header"><div class="fluid-icon ${fluid.cls}">${fluid.icon}</div><h3 class="fluid-title">${fluid.name}${titleValidity}</h3></div><div class="fluid-spec"><span class="label">النوع</span><span class="value">${fluid.viscosity}</span></div><div class="fluid-spec"><span class="label">المواصفة</span><span class="value">${fluid.spec}</span></div><div class="fluid-spec"><span class="label">السعة</span><span class="value">${fluid.capacity}</span></div><div class="fluid-spec"><span class="label">التغيير</span><span class="value gold">${fluid.interval}</span></div>${validitySpec}<div class="fluid-note">${fluid.note}</div><div class="reminder-section"><div class="reminder-title">⏰ سجّل آخر تغيير</div><div class="reminder-input-row"><input class="reminder-input" type="number" id="km-${key}" placeholder="عداد الكيلومترات عند آخر تغيير" min="0" inputmode="numeric"><input class="reminder-input" type="date" id="date-${key}" aria-label="تاريخ آخر تغيير"><button class="reminder-save-btn" onclick="saveReminder('${key}')">حفظ</button></div><div class="reminder-meta">سجّل عداد الكيلومترات (‏أو التاريخ) لحساب موعد التغيير تلقائياً — الفاصل: ${fluid.interval}${dateValidity ? ` · الصلاحية الزمنية: ${dateValidity}` : ''}</div><div id="status-${key}"></div></div></article>`;
   }).join('');
   alertsContainer.innerHTML = `<div class="alert-box warning"><div class="alert-icon">⚠️</div><div class="alert-content"><h4>تنبيه مهم</h4><p>المواعيد إرشادية. راجع كتيب سيارتك واستعن بفني متخصص قبل تغيير أي سائل.</p></div></div>`;
   showFluid(fluids[0]?.[0]);

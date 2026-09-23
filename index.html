@@ -2813,15 +2813,12 @@ function deleteReminder(index) { const reminders = readReminders(); reminders.sp
 function refKmState(item) {
   const kmInterval = parseInt(item.kmInterval, 10);
   if (isNaN(kmInterval) || item.km == null || item.currentKm == null) return null;
-  let last = item.km;
-  let current = item.currentKm;
-  if (last > current) { const t = last; last = current; current = t; }
-  return { interval: kmInterval, last, current };
+  return { interval: kmInterval, last: item.km, current: item.currentKm };
 }
 function reminderState(item) {
   const r = refKmState(item);
   if (r) {
-    const used = r.current - r.last;
+    const used = Math.max(0, r.current - r.last);
     const remaining = r.interval - used;
     const percent = Math.max(0, Math.min(100, Math.round((used / r.interval) * 100)));
     if (remaining < 0) return ['overdue', `متأخر بـ ${fmtKm(Math.abs(remaining))} كم`, percent, true];
@@ -2921,8 +2918,7 @@ function customReminderState(item) {
     const last = item.km;
     const live = Number.parseInt((document.getElementById('kmInput')?.value || '').replace(/[^\d]/g, ''), 10);
     let current = Number.isNaN(live) ? (item.currentKm != null ? item.currentKm : last) : live;
-    if (current < last) current = last;
-    const used = current - last;
+    const used = Math.max(0, current - last);
     const remaining = interval - used;
     const percent = Math.max(0, Math.min(100, Math.round((used / interval) * 100)));
     const state = remaining < 0 ? 'overdue' : remaining <= 2000 ? 'soon' : 'ok';

@@ -25,6 +25,7 @@
     --shadow-lg: 0 12px 40px rgba(4, 20, 40, 0.15);
     --shadow-gold: 0 8px 28px rgba(255, 184, 0, 0.35);
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html { scroll-behavior: smooth; }
   body {
@@ -294,6 +295,24 @@
     margin-top: 10px; color: #365E52; font-size: 12px; line-height: 1.7;
     font-weight: 500;
   }
+  .client-tools {
+    background: linear-gradient(135deg, rgba(4,20,40,0.06), rgba(255,184,0,0.08));
+    border: 1px solid rgba(4,20,40,0.1); border-radius: var(--radius);
+    padding: 18px; margin-bottom: 16px;
+  }
+  .client-tools h3 { color: var(--navy); font-size: 16px; margin-bottom: 10px; }
+  .client-tools p { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
+  .tool-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .tool-button {
+    flex: 1; min-width: 150px; border: 0; border-radius: 12px; padding: 12px 14px;
+    background: var(--navy); color: white; font-family: inherit; font-weight: 700; cursor: pointer;
+  }
+  .tool-button.whatsapp { background: #16A34A; }
+  .maintenance-log {
+    margin-top: 14px; padding-top: 14px; border-top: 1px dashed #D7DEE8;
+  }
+  .maintenance-log-row { display: flex; gap: 8px; margin-top: 8px; }
+  .maintenance-log-row input { flex: 1; min-width: 0; }
 
   /* ============ BOTTOM NAV - GLASSMORPHISM ============ */
   .bottom-nav {
@@ -619,6 +638,7 @@
     <div id="carBadge"></div>
     <div id="alertsContainer"></div>
     <div id="maintenanceTipsContainer"></div>
+    <div id="clientPlanContainer"></div>
     <div id="tabsContainer" class="tabs"></div>
     <div id="fluidsContainer"></div>
     <button class="btn-primary" onclick="resetForm()" style="background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%); box-shadow: 0 6px 20px rgba(107,114,128,0.25); margin-bottom: 20px;"><span>🔄 بحث جديد</span></button>
@@ -635,6 +655,7 @@
       <div class="emoji">⏰</div>
       <p>لا توجد تذكيرات حالياً.<br>ابحث عن سوائل عربيتك، وسجّل عداد الكيلومترات عند آخر تغيير لكل سائل عشان يحسب الموقع موعد التغيير القادم.</p>
     </div>
+    <div id="maintenanceLogContainer"></div>
   </div>
 </div>
 
@@ -2525,6 +2546,41 @@ function updateMaintenanceTipsVisibility() {
   if (maintenanceTipsContainer) maintenanceTipsContainer.innerHTML = markup;
 }
 
+function readMaintenanceLog() {
+  try { return JSON.parse(localStorage.getItem('maintenanceLog') || '[]'); } catch (_) { return []; }
+}
+function writeMaintenanceLog(items) { localStorage.setItem('maintenanceLog', JSON.stringify(items)); }
+function renderClientPlan() {
+  const currentKm = Number.parseInt((kmInput.value || '').replace(/[^\d]/g, ''), 10);
+  if (!clientPlanContainer || !currentKm || !getSelectedModel()) return;
+  const nextOil = currentKm + 10000;
+  const nextInspection = Math.ceil(currentKm / 50000) * 50000;
+  const carLabel = `${CAR_DATA[makeSelect.value].name} ${getSelectedModelLabel()} موديل ${yearSelect.value}`;
+  clientPlanContainer.innerHTML = `<section class="client-tools"><h3>📋 خطة صيانة شخصية</h3><p><strong>${carLabel}</strong><br>التغيير الدوري للزيت القادم تقريباً عند <strong>${fmtKm(nextOil)} كم</strong>${nextInspection > currentKm ? `، والفحص الشامل القادم عند <strong>${fmtKm(nextInspection)} كم</strong>` : ''}.</p><div class="tool-actions"><button class="tool-button whatsapp" onclick="shareClientReport()">📱 إرسال التقرير واتساب</button><button class="tool-button" onclick="switchTab('reminders')">⏰ فتح سجل الصيانة</button></div></section>`;
+}
+function saveMaintenanceRecord() {
+  const date = document.getElementById('maintenanceDate')?.value;
+  const km = Number.parseInt(document.getElementById('maintenanceKm')?.value || '', 10);
+  const note = document.getElementById('maintenanceNote')?.value.trim();
+  if (!date || isNaN(km) || !note) { alert('اكتب التاريخ والعداد ووصف الخدمة أولاً.'); return; }
+  const records = readMaintenanceLog();
+  records.unshift({ date, km, note });
+  writeMaintenanceLog(records);
+  renderMaintenanceLog();
+}
+function renderMaintenanceLog() {
+  if (!maintenanceLogContainer) return;
+  const records = readMaintenanceLog();
+  maintenanceLogContainer.innerHTML = `<section class="client-tools"><h3>🧾 سجل صيانة سيارتك</h3><p>السجل محفوظ على هذا الجهاز فقط ولا يحتاج إلى تسجيل دخول.</p><div class="maintenance-log-row"><input class="reminder-input" id="maintenanceDate" type="date" aria-label="تاريخ الصيانة"><input class="reminder-input" id="maintenanceKm" type="number" placeholder="العداد" min="0"><input class="reminder-input" id="maintenanceNote" type="text" placeholder="مثال: تغيير زيت الموتور"></div><div class="tool-actions"><button class="tool-button" onclick="saveMaintenanceRecord()">حفظ في السجل</button></div>${records.length ? `<div class="maintenance-log">${records.slice(0, 10).map(record => `<p>📌 ${formatDate(record.date)} · ${fmtKm(record.km)} كم · ${record.note}</p>`).join('')}</div>` : ''}</section>`;
+}
+function shareClientReport() {
+  const model = getSelectedModel();
+  const km = Number.parseInt((kmInput.value || '').replace(/[^\d]/g, ''), 10);
+  if (!model || !km) return;
+  const text = `تقرير صيانة من مركز المصطفى%0Aالسيارة: ${CAR_DATA[makeSelect.value].name} ${getSelectedModelLabel()} موديل ${yearSelect.value}%0Aالعداد الحالي: ${fmtKm(km)} كم%0Aتغيير الزيت القادم تقريباً: ${fmtKm(km + 10000)} كم%0Aيرجى مراجعة الفني قبل اعتماد المواصفات.`;
+  window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener');
+}
+
 // ============================================================
 // تطبيع فترات زيت الفتيس حسب النوع
 // ============================================================
@@ -2597,6 +2653,8 @@ const fluidsContainer = document.getElementById('fluidsContainer');
 const tabsContainer = document.getElementById('tabsContainer');
 const alertsContainer = document.getElementById('alertsContainer');
 const maintenanceTipsContainer = document.getElementById('maintenanceTipsContainer');
+const clientPlanContainer = document.getElementById('clientPlanContainer');
+const maintenanceLogContainer = document.getElementById('maintenanceLogContainer');
 const homeMaintenanceTipsContainer = document.getElementById('homeMaintenanceTipsContainer');
 const carBadge = document.getElementById('carBadge');
 
@@ -2632,6 +2690,7 @@ function init() {
     fillSelect(yearSelect, model ? model.years.map(year => ({ value: year, label: year })) : [], 'اختر السنة');
   });
   renderReminders();
+  renderMaintenanceLog();
 }
 
 function getSelectedModel() {
@@ -2676,6 +2735,7 @@ function renderResults(model) {
   }).join('');
   alertsContainer.innerHTML = `<div class="alert-box warning"><div class="alert-icon">⚠️</div><div class="alert-content"><h4>تنبيه مهم</h4><p>المواعيد إرشادية. راجع كتيب سيارتك واستعن بفني متخصص قبل تغيير أي سائل.</p></div></div>`;
   updateMaintenanceTipsVisibility();
+  renderClientPlan();
   showFluid(fluids[0]?.[0]);
 }
 
@@ -2696,7 +2756,7 @@ function switchTab(tab) {
   inputSection.classList.toggle('active', tab === 'home');
   resultsSection.classList.toggle('active', tab === 'results' && !!resultsSection.querySelector('.car-badge'));
   remindersSection.classList.toggle('active', tab === 'reminders');
-  if (tab === 'reminders') renderReminders();
+  if (tab === 'reminders') { renderReminders(); renderMaintenanceLog(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 

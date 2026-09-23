@@ -275,6 +275,25 @@
   .alert-icon { font-size: 24px; flex-shrink: 0; line-height: 1; }
   .alert-content h4 { font-size: 14px; font-weight: 800; margin-bottom: 6px; color: var(--navy); letter-spacing: -0.2px; }
   .alert-content p { font-size: 13px; line-height: 1.65; color: #4A5568; font-weight: 500; }
+  .maintenance-tips {
+    border-right: 4px solid #10B981;
+    background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.04));
+    border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px;
+    animation: fadeInUp 0.5s ease both;
+  }
+  .maintenance-tips h3 {
+    color: #065F46; font-size: 16px; font-weight: 800; margin-bottom: 10px;
+  }
+  .maintenance-tips ol {
+    margin: 0; padding-right: 22px; color: #064E3B;
+  }
+  .maintenance-tips li {
+    padding: 4px 0; font-size: 13px; line-height: 1.65; font-weight: 600;
+  }
+  .maintenance-tips p {
+    margin-top: 10px; color: #365E52; font-size: 12px; line-height: 1.7;
+    font-weight: 500;
+  }
 
   /* ============ BOTTOM NAV - GLASSMORPHISM ============ */
   .bottom-nav {
@@ -598,6 +617,7 @@
   <div id="resultsSection" class="results-section">
     <div id="carBadge"></div>
     <div id="alertsContainer"></div>
+    <div id="maintenanceTipsContainer"></div>
     <div id="tabsContainer" class="tabs"></div>
     <div id="fluidsContainer"></div>
     <button class="btn-primary" onclick="resetForm()" style="background: linear-gradient(135deg, #6B7280 0%, #9CA3AF 100%); box-shadow: 0 6px 20px rgba(107,114,128,0.25); margin-bottom: 20px;"><span>🔄 بحث جديد</span></button>
@@ -2564,6 +2584,7 @@ const loading = document.getElementById('loading');
 const fluidsContainer = document.getElementById('fluidsContainer');
 const tabsContainer = document.getElementById('tabsContainer');
 const alertsContainer = document.getElementById('alertsContainer');
+const maintenanceTipsContainer = document.getElementById('maintenanceTipsContainer');
 const carBadge = document.getElementById('carBadge');
 
 function fillSelect(select, items, placeholder) {
@@ -2640,6 +2661,8 @@ function renderResults(model) {
     return `<article class="fluid-card" data-fluid-card="${key}" style="animation-delay:${i * 70}ms"><div class="fluid-header"><div class="fluid-icon ${fluid.cls}">${fluid.icon}</div><h3 class="fluid-title">${fluid.name}${titleValidity}</h3></div><div class="fluid-spec"><span class="label">النوع</span><span class="value">${fluid.viscosity}</span></div><div class="fluid-spec"><span class="label">المواصفة</span><span class="value">${fluid.spec}</span></div><div class="fluid-spec"><span class="label">السعة</span><span class="value">${fluid.capacity}</span></div><div class="fluid-spec"><span class="label">التغيير</span><span class="value gold">${fluid.interval}</span></div>${validitySpec}<div class="fluid-note">${fluid.note}</div><div class="reminder-section"><div class="reminder-title">⏰ سجّل آخر تغيير</div><div class="reminder-input-row"><input class="reminder-input" type="number" id="km-${key}" placeholder="عداد الكيلومترات عند آخر تغيير" min="0" inputmode="numeric"><input class="reminder-input" type="date" id="date-${key}" aria-label="تاريخ آخر تغيير"><button class="reminder-save-btn" onclick="saveReminder('${key}')">حفظ</button></div><div class="reminder-meta">سجّل عداد الكيلومترات (‏أو التاريخ) لحساب موعد التغيير تلقائياً — الفاصل: ${fluid.interval}${dateValidity ? ` · الصلاحية الزمنية: ${dateValidity}` : ''}</div><div id="status-${key}"></div></div></article>`;
   }).join('');
   alertsContainer.innerHTML = `<div class="alert-box warning"><div class="alert-icon">⚠️</div><div class="alert-content"><h4>تنبيه مهم</h4><p>المواعيد إرشادية. راجع كتيب سيارتك واستعن بفني متخصص قبل تغيير أي سائل.</p></div></div>`;
+  const currentKm = parseInt(kmInput.value.replace(/[^\d]/g, ''), 10);
+  maintenanceTipsContainer.innerHTML = currentKm > 50000 ? `<section class="maintenance-tips"><h3>🛠️ نصائح إضافية لسيارتك — أكثر من 50,000 كم</h3><ol><li>فحص السيور.</li><li>فحص البوجيهات.</li><li>عمل دورة تنظيف لزيت الموتور (Engine Flush) حسب حالة الزيت وتعليمات الشركة.</li><li>عمل دورة تنظيف كربون لدورة الاحتراق بالكامل، وتشمل البوابة وحساس الشكمان وعلبة البيئة والمانيفولد، بعد الفحص والتأكد من ملاءمتها.</li><li>تنظيف دورة البنزين باستخدام منظف مناسب في تانك السيارة.</li><li>فحص الفلاتر: فلتر الموتور وفلتر التكييف.</li><li>تنظيف جسم الموتور من الأتربة وآثار الزيوت بالطريقة الآمنة، مع تجنب وصول المياه إلى الكهرباء والحساسات.</li><li>فحص السيارة بجهاز كشف الأعطال ومراجعة أو إعادة تهيئة الحساسات عند الحاجة وفق مواصفات المصنع.</li></ol><p>هذه توصيات فحص وصيانة إرشادية وليست كلها تغييرات إلزامية. يحدد الفني ما يلزم بعد الفحص، مع الرجوع إلى كتيب السيارة وتعليمات الشركة.</p></section>` : '';
   showFluid(fluids[0]?.[0]);
 }
 

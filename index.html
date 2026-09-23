@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="المصطفى">
 <title>مركز المصطفى لصيانة السيارات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --navy: #041428;
@@ -33,11 +36,18 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Tahoma', sans-serif;
+    font-family: 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Tahoma', sans-serif;
     background: var(--bg); color: var(--text); min-height: 100vh;
     padding-bottom: 100px; overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  select, input, button, textarea {
+    font-family: inherit;
+  }
+  .number, .form-input, .reminder-input, .value, .reminder-status, .count-badge, .call-number-info .number {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
   }
 
   /* ============ HEADER ============ */
@@ -2417,6 +2427,114 @@ EXTRA_MODELS.forEach(([makeKey, modelKey, name, years, sourceKey]) => {
   };
 });
 
+// موديلات وأجيال إضافية (الدفعة الثانية) — أولوية للسوق المصري والموديلات الشائعة.
+// المواصفات مبدئية وإرشادية وتظل مراجعة كتيب السيارة هي المرجع النهائي.
+const EXTRA_MODELS_2 = [
+  ["hyundai", "verna2020", "فيرنا الجديدة", "2020-2026", "accenthci"],
+  ["hyundai", "azera", "أزيرا", "2006-2016", "sonata"],
+  ["hyundai", "sonatalf", "سوناتا LF", "2015-2019", "sonata"],
+  ["hyundai", "sonatadn8", "سوناتا DN8", "2020-2026", "sonata"],
+  ["hyundai", "matrix", "ماتريكس", "2005-2012", "i20"],
+  ["hyundai", "tucsontl", "توسان TL", "2016-2020", "tucson"],
+  ["kia", "magentis", "ماجانتيس", "2005-2014", "grandcerato"],
+  ["kia", "optima", "أوبتيما", "2010-2021", "k5"],
+  ["kia", "cadenza", "كادينزا", "2012-2021", "k5"],
+  ["kia", "ceed", "سيد", "2012-2020", "rio"],
+  ["kia", "niro", "نيرو", "2017-2026", "seltos"],
+  ["kia", "sportagetl", "سبورتاج TL", "2010-2015", "sportage"],
+  ["mitsubishi", "colt", "كولت", "2003-2013", "attrage"],
+  ["mitsubishi", "spacestar", "سبيس ستار", "2012-2020", "attrage"],
+  ["toyota", "corollae110", "كورولا E110", "2000-2002", "corolla"],
+  ["toyota", "camryxv50", "كامري XV50", "2012-2017", "camry"],
+  ["toyota", "camryxv70", "كامري XV70", "2018-2024", "camry"],
+  ["toyota", "camryxv80", "كامري XV80", "2024-2026", "camry"],
+  ["toyota", "auris", "أوريس", "2010-2018", "corolla"],
+  ["toyota", "highlander", "هايلاندر", "2014-2026", "prado"],
+  ["toyota", "avalon", "أفالون", "2010-2020", "camry"],
+  ["toyota", "prius", "بريوس", "2010-2020", "corolla"],
+  ["toyota", "vios", "فايوس", "2010-2020", "yaris"],
+  ["toyota", "rush", "راش", "2018-2026", "rav4"],
+  ["toyota", "innova", "إينوفا", "2010-2020", "fortuner"],
+  ["nissan", "qashqai11", "قشقاي J11", "2014-2020", "qashqai"],
+  ["nissan", "note", "نوت", "2010-2017", "tiida"],
+  ["nissan", "pathfinder", "باتفايندر", "2013-2026", "xtrail"],
+  ["nissan", "armada", "أرمادا", "2016-2026", "patrol"],
+  ["nissan", "altima", "ألتيما", "2016-2026", "maxima"],
+  ["nissan", "latio", "لاتيو", "2007-2013", "almira"],
+  ["nissan", "sylphy", "سيلفي", "2012-2020", "sunny"],
+  ["geely", "emgrand9", "إمجراند 9", "2023-2026", "emgrand"],
+  ["mg", "mg5new", "MG5", "2020-2026", "mg5"],
+  ["chery", "arrizo6", "أريزو 6", "2018-2026", "arrizo5"],
+  ["chery", "arrizo8", "أريزو 8", "2023-2026", "arrizo5"],
+  ["haval", "f7", "F7", "2020-2026", "h6"],
+  ["haval", "f7x", "F7x", "2020-2026", "h6"],
+  ["haval", "h4", "H4", "2018-2026", "h5"],
+  ["changan", "cs95", "CS95", "2019-2026", "cs75"],
+  ["changan", "cs15", "CS15", "2018-2026", "cs35plus"],
+  ["peugeot", "peugeot405", "بيجو 405", "1995-2013", "301"],
+  ["peugeot", "peugeot206", "بيجو 206", "1999-2013", "208"],
+  ["peugeot", "peugeot406", "بيجو 406", "1996-2004", "508"],
+  ["peugeot", "peugeot407", "بيجو 407", "2004-2011", "508"],
+  ["peugeot", "peugeot307", "بيجو 307", "2001-2008", "308"],
+  ["peugeot", "peugeot508new", "بيجو 508", "2018-2026", "508"],
+  ["mercedes", "gla", "GLA", "2014-2026", "cla"],
+  ["mercedes", "glb", "GLB", "2019-2026", "glc"],
+  ["mercedes", "gclass", "الفئة G", "2000-2026", "gle"],
+  ["mercedes", "eclass213", "الفئة E W213", "2016-2024", "eclass"],
+  ["mercedes", "cclass205", "الفئة C W205", "2015-2021", "cclass"],
+  ["mercedes", "sclass223", "S-Class W223", "2021-2026", "sclass"],
+  ["volkswagen", "jettanew", "جيتا", "2019-2026", "jetta"],
+  ["volkswagen", "polonf", "بولو", "2010-2020", "polo"],
+  ["volkswagen", "tiguanlb", "تيجوان", "2016-2021", "tiguan"],
+  ["seat", "ibizanew", "إبيزا", "2010-2020", "ibiza"],
+  ["chevrolet", "spin", "سبين", "2012-2020", "aveo"],
+  ["chevrolet", "cobalt", "كوبالت", "2006-2016", "optra"],
+  ["chevrolet", "lacetti", "لاسيتي", "2006-2016", "optra"],
+  ["chevrolet", "sonic", "سونيك", "2012-2019", "aveo"],
+  ["chevrolet", "trailblazerold", "ترايل بليزر", "2006-2016", "trailblazer"],
+  ["opel", "karl", "كارل", "2015-2020", "corsa"],
+  ["opel", "insignia2017", "إنسيجنيا", "2017-2026", "insignia"],
+  ["fiat", "fiat500", "فيات 500", "2008-2020", "punto"],
+  ["fiat", "fiat500l", "500L", "2013-2020", "500x"],
+  ["lada", "lada2115", "لادا 2115", "1997-2012", "2107"],
+  ["lada", "samara", "سامارا", "1984-2004", "2107"],
+  ["lada", "largus", "لارجوس", "2012-2026", "vesta"],
+  ["mazda", "mazda2", "مازدا 2", "2010-2020", "mazda3"],
+  ["mazda", "cx4", "CX-4", "2018-2026", "cx5"],
+  ["suzuki", "alto", "ألتو", "2014-2022", "celerio"],
+  ["suzuki", "dzire", "ديزير", "2015-2020", "swift"],
+  ["suzuki", "spresso", "إسبريسو", "2019-2026", "celerio"],
+  ["suzuki", "grandvitara", "جراند فيتارا", "2005-2018", "vitara"],
+  ["renault", "fluence", "فلوانس", "2010-2019", "megane"],
+  ["renault", "clio4", "كليو الرابعة", "2012-2020", "clio"],
+  ["renault", "capturnew", "كابتشر", "2020-2026", "captur"],
+  ["dacia", "logan2020", "لوجان", "2021-2026", "logan"],
+  ["dacia", "duster2024", "داستر", "2024-2026", "duster"],
+  ["ford", "fiesta2020", "فييستا", "2020-2026", "focus"],
+  ["bmw", "x4", "X4", "2014-2026", "x3"],
+  ["bmw", "x7", "X7", "2019-2026", "x6"],
+  ["audi", "q2", "Q2", "2016-2026", "q3"],
+  ["audi", "q6", "Q6", "2018-2026", "q5"],
+  ["citroen", "grandpicasso", "جراند بيكاسو", "2006-2017", "c4"],
+  ["citroen", "c4picasso", "C4 بيكاسو", "2013-2020", "c4"],
+  ["faw", "bestunb70", "بيستون B70", "2020-2026", "besturnb50"],
+  ["faw", "bestunx20", "بيستون X20", "2020-2026", "x40"]
+];
+
+EXTRA_MODELS_2.forEach(([makeKey, modelKey, name, years, sourceKey]) => {
+  const source = CAR_DATA[makeKey]?.models[sourceKey];
+  if (!source || CAR_DATA[makeKey].models[modelKey]) return;
+  CAR_DATA[makeKey].models[modelKey] = {
+    ...source,
+    name,
+    years: yearsFromRange(years),
+    fluids: Object.fromEntries(Object.entries(source.fluids).map(([key, fluid]) => [
+      key,
+      { ...fluid, note: `${fluid.note} المواصفة إرشادية لهذا الجيل؛ راجع كتيب السيارة.` }
+    ]))
+  };
+});
+
 // تجميع الموديلات في عائلات وأجيال. يمكن إضافة أي عائلة جديدة هنا بدون
 // تغيير قاعدة بيانات السوائل نفسها؛ كل variant يشير إلى موديل موجود بالأسفل.
 const MODEL_GROUPS = {
@@ -2424,17 +2542,24 @@ const MODEL_GROUPS = {
     elantra: {
       name: "إلنترا",
       variants: [
-        { value: "elantrahd", label: "HD" },
-        { value: "elantramd", label: "MD" },
-        { value: "elantraad", label: "AD" },
-        { value: "elantraad2", label: "AD (2016-2020)" }
+        { value: "elantrahd", label: "HD (2005-2010)" },
+        { value: "elantramd", label: "MD (2010-2015)" },
+        { value: "elantraad", label: "AD (2015-2020)" },
+        { value: "elantracn7", label: "CN7 (2020-2026)" }
       ]
     },
     accent: {
       name: "أكسنت",
       variants: [
-        { value: "accentrb", label: "RB" },
-        { value: "accenthci", label: "HCI" }
+        { value: "accentrb", label: "RB (2005-2010)" },
+        { value: "accenthci", label: "HCI (2017-2026)" }
+      ]
+    },
+    tucson: {
+      name: "توسان",
+      variants: [
+        { value: "tucsontl", label: "TL (2016-2020)" },
+        { value: "tucson", label: "NX4 (2021-2026)" }
       ]
     }
   }
@@ -2442,10 +2567,14 @@ const MODEL_GROUPS = {
 
 const EXTRA_MODEL_GROUPS = {
   toyota: {
-    corolla: [["corolla", "الجيل المسجل"], ["corollae100", "E100"], ["corollae120", "E120"], ["corollae140", "E140"], ["corollae170", "E170"], ["corollae210", "E210"]],
+    corolla: [["corolla", "الجيل المسجل"], ["corollae100", "E100"], ["corollae110", "E110"], ["corollae120", "E120"], ["corollae140", "E140"], ["corollae170", "E170"], ["corollae210", "E210"]],
+    camry: [["camry", "الجيل المسجل"], ["camryxv50", "XV50 (2012-2017)"], ["camryxv70", "XV70 (2018-2024)"], ["camryxv80", "XV80 (2024-2026)"], ["avalon", "أفالون"], ["crown2024", "كراون"]],
+  },
+  kia: {
+    sportage: [["sportage", "NQ5 (2021-2026)"], ["sportageql", "QL (2016-2021)"], ["sportagetl", "TL (2010-2015)"]]
   },
   nissan: {
-    sunny: [["sunnyb13", "B13"], ["sunnyb15", "B15"], ["sunny", "الجيل الحديث"], ["sunny2020", "N17 (2010-2026)"]]
+    sunny: [["sunnyb13", "B13"], ["sunnyb15", "B15"], ["sunny", "الجيل الحديث"], ["sunny2020", "N17 (2010-2026)"], ["sylphy", "سيلفي"]]
   },
   chevrolet: {
     optra: [["optra", "الجيل المسجل"], ["nubira", "نوبيرا"], ["espero", "إسبيرو"]]
@@ -2580,7 +2709,7 @@ Object.entries(CAR_DATA).forEach(([makeKey, car]) => {
     if (!alreadyGrouped) {
       MODEL_GROUPS[makeKey][modelKey] = {
         name: model.name,
-        variants: [{ value: modelKey, label: "الفئة المتاحة" }]
+        variants: [{ value: modelKey, label: model.name }]
       };
     }
   });
@@ -2595,7 +2724,7 @@ function getModelGroups(makeKey) {
   Object.entries(car.models).forEach(([value, model]) => {
     if (!groupedKeys.has(value)) groups.push({ value, label: model.name });
   });
-  return groups;
+  return groups.sort((a, b) => a.label.localeCompare(b.label, 'ar'));
 }
 
 function getModelVariants(makeKey, groupKey) {
@@ -2609,7 +2738,11 @@ function getModelVariants(makeKey, groupKey) {
 function getSelectedModelLabel() {
   const group = MODEL_GROUPS[makeSelect.value]?.[modelSelect.value];
   const variant = getModelVariants(makeSelect.value, modelSelect.value).find(item => item.value === variantSelect.value);
-  return group ? `${group.name} ${variant?.label || ""}`.trim() : variant?.label || "";
+  if (group) {
+    const v = variant?.label || '';
+    return `${group.name} ${v && v !== group.name ? v : ''}`.trim();
+  }
+  return variant?.label || '';
 }
 
 function getMaintenanceTipsMarkup() {
@@ -2750,7 +2883,9 @@ function fillSelect(select, items, placeholder) {
 }
 
 function init() {
-  fillSelect(makeSelect, Object.entries(CAR_DATA).map(([value, car]) => ({ value, label: car.name })), 'اختر الماركة');
+  fillSelect(makeSelect, Object.entries(CAR_DATA)
+    .map(([value, car]) => ({ value, label: car.name }))
+    .sort((a, b) => a.label.localeCompare(b.label, 'ar')), 'اختر الماركة');
   makeSelect.addEventListener('change', () => {
     fillSelect(modelSelect, getModelGroups(makeSelect.value), 'اختر الموديل أولاً');
     fillSelect(variantSelect, [], 'اختر الفئة أولاً');

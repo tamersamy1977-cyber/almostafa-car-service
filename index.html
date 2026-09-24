@@ -1893,7 +1893,7 @@ const CAR_DATA = {
         brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5-0.7 لتر", interval: "كل سنتين", note: "فحص دوري." },
         transmission: { name: "زيت الفتيس", icon: "⚙️", cls: "transmission", viscosity: "Renault ATF (EDC)", spec: "حسب النوع", capacity: "6 لتر", interval: "كل 60,000 كم", note: "قير أتوماتيك." }
       }},
-      "logan": { name: "لوجان", years: ["2015","2016","2017","2018","2019","2020","2021","2022","2023","2024"], engine: "1.5L ديزل أو 1.6L بنزين", fluids: {
+      "logan": { name: "لوجان", years: ["2010","2011","2012","2013","2014","2015","2016","2017","2018","2019","2020","2021","2022","2023","2024","2025","2026"], engine: "1.5L ديزل أو 1.6L بنزين", fluids: {
         engine: { name: "زيت المحرك", icon: "🛢️", cls: "engine", viscosity: "5W-30", spec: "API SN، ACEA C3", capacity: "4.3-4.7 لتر", interval: "كل 15,000 كم", note: "سيدان عائلية عملية." },
         coolant: { name: "سائل التبريد", icon: "❄️", cls: "coolant", viscosity: "Renault Glaceol RX", spec: "OAT", capacity: "6 لتر", interval: "كل 5 سنوات", note: "سائل رينو." },
         brake: { name: "زيت الفرامل", icon: "🛑", cls: "brake", viscosity: "DOT 4", spec: "DOT 4", capacity: "0.5 لتر", interval: "كل سنتين", note: "فحص دوري." },
@@ -2551,7 +2551,8 @@ function yearsFromRange(range) {
 
 EXTRA_MODELS.forEach(([makeKey, modelKey, name, years, sourceKey]) => {
   const source = CAR_DATA[makeKey]?.models[sourceKey];
-  if (!source || CAR_DATA[makeKey].models[modelKey]) return;
+  const nameTaken = Object.values(CAR_DATA[makeKey]?.models || {}).some(m => m?.name === name);
+  if (!source || CAR_DATA[makeKey].models[modelKey] || nameTaken) return;
   CAR_DATA[makeKey].models[modelKey] = {
     ...source,
     name,
@@ -2659,7 +2660,8 @@ const EXTRA_MODELS_2 = [
 
 EXTRA_MODELS_2.forEach(([makeKey, modelKey, name, years, sourceKey]) => {
   const source = CAR_DATA[makeKey]?.models[sourceKey];
-  if (!source || CAR_DATA[makeKey].models[modelKey]) return;
+  const nameTaken = Object.values(CAR_DATA[makeKey]?.models || {}).some(m => m?.name === name);
+  if (!source || CAR_DATA[makeKey].models[modelKey] || nameTaken) return;
   CAR_DATA[makeKey].models[modelKey] = {
     ...source,
     name,

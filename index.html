@@ -3307,7 +3307,17 @@ function switchTab(tab) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function openCallModal() { document.getElementById('callModal').classList.add('active'); }
+function openCallModal() {
+  var callModal = document.getElementById('callModal');
+  callModal.classList.add('active');
+  setCallView('viewCall');
+}
+function setCallView(viewId) {
+  var views = document.querySelectorAll('.call-view');
+  for (var i = 0; i < views.length; i++) {
+    views[i].classList.toggle('active', views[i].id === viewId);
+  }
+}
 function openCallSection(sectionId) {
   openCallModal();
   setTimeout(function () {

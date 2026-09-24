@@ -491,6 +491,17 @@
     line-height: 1.2; margin-top: 2px;
   }
   .fab-call:active { transform: scale(0.9) rotate(-10deg); }
+
+  /* ============ QUICK CONTACT BAR (buttons outside the box) ============ */
+  .quick-contact-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 16px;
+  }
+  .quick-contact-bar .tool-button {
+    flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: center;
+    gap: 4px; white-space: nowrap;
+  }
+  .quick-contact-bar .tool-button.whatsapp { background: #16A34A; }
+  .quick-contact-bar .tool-button.install { background: linear-gradient(135deg, #0F766E 0%, #0EA5E9 100%); }
   @keyframes pulseGold {
     0%, 100% { box-shadow: 0 8px 28px rgba(255, 184, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.4); }
     50% { box-shadow: 0 8px 40px rgba(255, 184, 0, 0.85), 0 0 0 8px rgba(255, 184, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.4); }
@@ -657,6 +668,12 @@
 
 <div class="container">
   <div id="inputSection" class="results-section active">
+    <div class="quick-contact-bar" aria-label="تواصل سريع">
+      <button class="tool-button whatsapp" onclick="sendInquiryWhatsApp()">💬 استفسار واتساب</button>
+      <button class="tool-button" onclick="openCallSection('bookingTitle')">📅 حجز موعد صيانة</button>
+      <button class="tool-button" onclick="openCallSection('callbackTitle')">📲 طلب معاودة اتصال</button>
+      <button class="tool-button" onclick="promptInstallApp()">🏠 الموقع كتطبيق</button>
+    </div>
     <div class="card" style="margin-top: 20px;">
       <div class="form-group">
         <label class="form-label">🚗 الماركة</label>
@@ -753,14 +770,14 @@
     <div class="contact-section-title">💬 تواصل واتساب</div>
     <button class="tool-button whatsapp" onclick="sendInquiryWhatsApp()">إرسال استفسار واتساب</button>
 
-    <div class="contact-section-title">📅 حجز موعد صيانة</div>
+    <div class="contact-section-title" id="bookingTitle">📅 حجز موعد صيانة</div>
     <div class="contact-row">
       <input type="date" id="bookingDate" class="form-input" aria-label="تاريخ الموعد">
       <select id="bookingTime" class="form-select" aria-label="وقت الموعد"></select>
     </div>
     <button class="tool-button whatsapp" onclick="confirmBooking()">✔ تأكيد الحجز عبر واتساب</button>
 
-    <div class="contact-section-title">📲 طلب معاودة اتصال</div>
+    <div class="contact-section-title" id="callbackTitle">📲 طلب معاودة اتصال</div>
     <div class="contact-row">
       <input type="tel" id="callbackPhone" class="form-input" placeholder="رقم موبايلك (11 رقم)" inputmode="numeric">
       <select id="callbackTime" class="form-select" aria-label="الوقت المناسب">
@@ -772,7 +789,7 @@
     </div>
     <button class="tool-button whatsapp" onclick="requestCallback()">اطلب معاودة الاتصال</button>
 
-    <div class="contact-section-title">🏠 الموقع كتطبيق</div>
+    <div class="contact-section-title" id="installTitle">🏠 الموقع كتطبيق</div>
     <button class="tool-button" id="installAppBtn" onclick="promptInstallApp()">أضف الموقع للشاشة الرئيسية</button>
     <div id="installNote" class="install-note"></div>
 
@@ -3276,6 +3293,13 @@ function switchTab(tab) {
 }
 
 function openCallModal() { document.getElementById('callModal').classList.add('active'); }
+function openCallSection(sectionId) {
+  openCallModal();
+  setTimeout(function () {
+    var el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 350);
+}
 function closeCallModal(event) {
   if (!event || event.target.id === 'callModal') document.getElementById('callModal').classList.remove('active');
 }

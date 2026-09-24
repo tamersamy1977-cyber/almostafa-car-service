@@ -502,6 +502,12 @@
   }
   .quick-contact-bar .tool-button.whatsapp { background: #16A34A; }
   .quick-contact-bar .tool-button.install { background: linear-gradient(135deg, #0F766E 0%, #0EA5E9 100%); }
+
+  /* ===== عروض المودال: عرض واحد بس يظهر في المرة، حسب الخيار المختار ===== */
+  .call-view { display: none; }
+  .call-view.active { display: block; animation: fadeInView 0.3s ease; }
+  @keyframes fadeInView { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
   @keyframes pulseGold {
     0%, 100% { box-shadow: 0 8px 28px rgba(255, 184, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.4); }
     50% { box-shadow: 0 8px 40px rgba(255, 184, 0, 0.85), 0 0 0 8px rgba(255, 184, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.4); }
@@ -748,50 +754,59 @@
 <div class="call-modal-overlay" id="callModal" onclick="closeCallModal(event)">
   <div class="call-modal" onclick="event.stopPropagation()">
     <div class="call-modal-handle"></div>
-    <h3 class="call-modal-title">📞 استشارة مجانية</h3>
-    <p class="call-modal-subtitle">اتصل بنا للحصول على استشارة مجانية حول سوائل وصيانة سيارتك</p>
 
-    <a href="tel:+201060716073" class="call-number-btn">
-      <div class="call-number-icon">📱</div>
-      <div class="call-number-info">
-        <div class="label">استشارة مجانية · الخط الأول</div>
-        <div class="number" dir="ltr">010 6071 6073</div>
-      </div>
-    </a>
+    <!-- ===== العرض الأول: أرقام الاتصال فقط ===== -->
+    <div class="call-view" id="viewCall">
+      <h3 class="call-modal-title">📞 استشارة مجانية</h3>
+      <p class="call-modal-subtitle">اتصل بنا للحصول على استشارة مجانية حول سوائل وصيانة سيارتك</p>
 
-    <a href="tel:+201113335291" class="call-number-btn">
-      <div class="call-number-icon">📱</div>
-      <div class="call-number-info">
-        <div class="label">استشارة مجانية · الخط الثاني</div>
-        <div class="number" dir="ltr">011 1333 5291</div>
-      </div>
-    </a>
+      <a href="tel:+201060716073" class="call-number-btn">
+        <div class="call-number-icon">📱</div>
+        <div class="call-number-info">
+          <div class="label">استشارة مجانية · الخط الأول</div>
+          <div class="number" dir="ltr">010 6071 6073</div>
+        </div>
+      </a>
 
-    <div class="contact-section-title">💬 تواصل واتساب</div>
-    <button class="tool-button whatsapp" onclick="sendInquiryWhatsApp()">إرسال استفسار واتساب</button>
-
-    <div class="contact-section-title" id="bookingTitle">📅 حجز موعد صيانة</div>
-    <div class="contact-row">
-      <input type="date" id="bookingDate" class="form-input" aria-label="تاريخ الموعد">
-      <select id="bookingTime" class="form-select" aria-label="وقت الموعد"></select>
+      <a href="tel:+201113335291" class="call-number-btn">
+        <div class="call-number-icon">📱</div>
+        <div class="call-number-info">
+          <div class="label">استشارة مجانية · الخط الثاني</div>
+          <div class="number" dir="ltr">011 1333 5291</div>
+        </div>
+      </a>
     </div>
-    <button class="tool-button whatsapp" onclick="confirmBooking()">✔ تأكيد الحجز عبر واتساب</button>
 
-    <div class="contact-section-title" id="callbackTitle">📲 طلب معاودة اتصال</div>
-    <div class="contact-row">
-      <input type="tel" id="callbackPhone" class="form-input" placeholder="رقم موبايلك (11 رقم)" inputmode="numeric">
-      <select id="callbackTime" class="form-select" aria-label="الوقت المناسب">
-        <option value="في أي وقت">في أي وقت</option>
-        <option value="صباحًا (9-12)">صباحًا (9-12)</option>
-        <option value="الظهر (12-4)">الظهر (12-4)</option>
-        <option value="مساءً (4-8)">مساءً (4-8)</option>
-      </select>
+    <!-- ===== العرض الثاني: حجز موعد صيانة فقط ===== -->
+    <div class="call-view" id="viewBooking">
+      <h3 class="call-modal-title">📅 حجز موعد صيانة</h3>
+      <p class="call-modal-subtitle">اختر تاريخ ووقت مناسب وسنؤكد لك الحجز عبر واتساب</p>
+
+      <div class="contact-row">
+        <input type="date" id="bookingDate" class="form-input" aria-label="تاريخ الموعد">
+        <select id="bookingTime" class="form-select" aria-label="وقت الموعد"></select>
+      </div>
+      <button class="tool-button whatsapp" onclick="confirmBooking()">✔ تأكيد الحجز عبر واتساب</button>
     </div>
-    <button class="tool-button whatsapp" onclick="requestCallback()">اطلب معاودة الاتصال</button>
 
-    <div class="contact-section-title" id="installTitle">🏠 الموقع كتطبيق</div>
-    <button class="tool-button" id="installAppBtn" onclick="promptInstallApp()">أضف الموقع للشاشة الرئيسية</button>
-    <div id="installNote" class="install-note"></div>
+    <!-- ===== العرض الثالث: طلب معاودة اتصال فقط ===== -->
+    <div class="call-view" id="viewCallback">
+      <h3 class="call-modal-title">📲 طلب معاودة اتصال</h3>
+      <p class="call-modal-subtitle">اترك رقمك والوقت المناسب وسنتصل بك في أقرب فرصة</p>
+
+      <div class="contact-row">
+        <input type="tel" id="callbackPhone" class="form-input" placeholder="رقم موبايلك (11 رقم)" inputmode="numeric">
+        <select id="callbackTime" class="form-select" aria-label="الوقت المناسب">
+          <option value="في أي وقت">في أي وقت</option>
+          <option value="صباحًا (9-12)">صباحًا (9-12)</option>
+          <option value="الظهر (12-4)">الظهر (12-4)</option>
+          <option value="مساءً (4-8)">مساءً (4-8)</option>
+        </select>
+      </div>
+      <button class="tool-button whatsapp" onclick="requestCallback()">✔ طلب معاودة الاتصال</button>
+    </div>
+
+    <button class="call-modal-close" onclick="closeCallModal()">إلغاء</button>
 
     <button class="call-modal-close" onclick="closeCallModal()">إلغاء</button>
   </div>
@@ -3296,9 +3311,16 @@ function openCallModal() { document.getElementById('callModal').classList.add('a
 function openCallSection(sectionId) {
   openCallModal();
   setTimeout(function () {
-    var el = document.getElementById(sectionId);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 350);
+    var map = {
+      bookingTitle: 'viewBooking',
+      callbackTitle: 'viewCallback'
+    };
+    var viewId = map[sectionId] || 'viewCall';
+    var views = document.querySelectorAll('.call-view');
+    for (var i = 0; i < views.length; i++) views[i].classList.remove('active');
+    var target = document.getElementById(viewId);
+    if (target) target.classList.add('active');
+  }, 100);
 }
 function closeCallModal(event) {
   if (!event || event.target.id === 'callModal') document.getElementById('callModal').classList.remove('active');
